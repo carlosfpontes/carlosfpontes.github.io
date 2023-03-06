@@ -27,7 +27,7 @@ function showForm() {
   const formId = shuffledIds[currentIndex];
   container.innerHTML = `
     <h2><center>Questionário ${currentIndex + 1}</center></h2>
-    <iframe src="https://docs.google.com/forms/d/e/${formId}/viewform?embedded=true" width="640" height="1000" frameborder="0" marginheight="0" marginwidth="0">Carregando...</iframe>
+    <iframe src="https://docs.google.com/forms/d/e/${formId}/viewform?embedded=true" width="1000" height="1000" frameborder="0" marginheight="0" marginwidth="0">Carregando...</iframe>
     <button onclick="showForm()">Próximo ambiente virtual</button>
   `;
   
