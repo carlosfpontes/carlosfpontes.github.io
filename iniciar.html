@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PESQUISA</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <h1 id=Cabecalho_titulo style="text-align: center; font-weight: bold;"><br>PESQUISA<br></h1>
+    </header>
+    
+<div id=formulario-div style="margin: 0px auto; max-width: 50%; text-align: center;" class="formulario">
+    <p style="text-align: center; font-weight: bold;">Dados Demográfico<br>
+    Envie agora os dados demográficos e serão preenchidos automaticamente nos próximos questionários.</br></p>
+
+<form>
+  <div><br>
+    <label for="age">Idade:</label><br>
+    <input type="number" id="age" name="age">
+  </div>
+  <div><br>
+    <label for="education">Escolaridade:</label><br>
+    <select id="education" name="education">
+      <option value="ensino_fundamental">Ensino Fundamental</option>
+      <option value="ensino_medio">Ensino Médio</option>
+      <option value="ensino_superior">Ensino Superior</option>
+      <option value="pos_graduacao">Pós-graduação</option>
+      <option value="prefiro_nao_informar_escolaridade">Prefiro não informar</option>
+    </select>
+  </div>
+  <div><br>
+    <label for="gender">Gênero:</label><br>
+    <select id="gender" name="gender">
+      <option value="masculino">Masculino</option>
+      <option value="feminino">Feminino</option>
+      <option value="outro_genero">Outro</option>
+      <option value="prefiro_nao_informar_genero">Prefiro não informar</option>
+    </select>
+  </div>
+  <div><br>
+    <label for="profession">Profissão:</label><br>
+    <select id="profession" name="profession">
+      <option value="profissional_arq_des_eng">Profissional de Arquitetura, Design, Engenharia ou áreas afins</option>
+      <option value="estudante_arq_des_eng">Estudante de Arquitetura, Design, Engenharia ou áreas afins</option>
+      <option value="profissional_de_outras_areas">Profissional ou estudante de outras áreas</option>
+      <option value="prefiro_nao_informar_profissao">Prefiro não informar</option>
+    </select>
+  </div>
+  <div><br>
+    <label for="city">Cidade:</label><br>
+    <input type="text" id="city" name="city">
+  </div>
+  <div><br>
+    <button type="button" onclick="submitForm()">Inciar pesquisa</button>
+  </div>
+</form>
+    </div>
+    
+    <footer id="Rodape_lpa_ufsm" style="text-align: center;">
+      <p> </p><br>
+      <br>
+      <a href="https://www.ufsm.br/grupos/lpa" target="_blank"><img src="img/LPA-Banner.jpg" alt="LPA - UFSM" title="LPA - UFSM" style="width: 307px; height: 66px;"></a>
+      <p>Laboratório de Psicologia Ambiental<br>
+      Universidade Federal de Santa Maria</p>
+      <p> </p>
+    </footer>
+    
+    <script>
+    function submitForm() {
+      // Obtém os valores dos campos do formulário
+      const age = document.getElementById("age").value;
+      const education = document.getElementById("education").value;
+      const gender = document.getElementById("gender").value;
+      const profession = document.getElementById("profession").value;
+      const city = document.getElementById("city").value;
+    
+      // Constrói a URL com os parâmetros do formulário
+      const url = `pesquisa.html?age=${age}&education=${education}&gender=${gender}&profession=${profession}&city=${city}`;
+    
+      // Redireciona para a página de pesquisa
+      window.location.href = url;
+    }
+
+</script>
+  </body>
+</html>

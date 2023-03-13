@@ -1,0 +1,76 @@
+body {
+  background-color: white;
+  color: black;
+  font-family: "Open Sans";
+}
+
+#Cabecalho_titulo {
+  background-color: white;
+  color: black;
+  text-align: center;
+  font-style: normal;
+  font-weight: bold;
+  font-family: "Open Sans";
+  font-size: xx-large;
+  line-height: normal;
+}
+
+#Rodape_lpa_ufsm {
+  background-color: white;
+  color: black;
+  text-align: center;
+  font-size: small;
+  font-family: "Open Sans";
+  font-weight: bold;
+  font-style: normal;
+  word-spacing: normal;
+  letter-spacing: normal;
+}
+
+label {
+  font-size: small;
+  font-weight: bold;
+  font-family: "Open Sans";
+  text-align: left;
+}
+
+input {
+  font-family: "Open Sans";
+  font-size: small;
+  text-align: left;
+  font-style: normal;
+  font-weight: normal;
+  width: 100%;
+  padding: 1px;
+  height: 20px;
+  min-height: 12px;
+  min-width: 100px;
+  max-width: 450px;
+  max-height: 25px;
+}
+
+select {
+  font-family: "Open Sans";
+  font-size: small;
+  text-align: left;
+  font-style: normal;
+  font-weight: normal;
+  padding: 1px;
+  height: 20px;
+  min-height: 12px;
+  min-width: 100px;
+  max-width: 450px;
+  max-height: 25px;
+  width: 100%;
+}
+
+button {
+  background-color: blue;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 20px;
+  border: medium none;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
