@@ -11,7 +11,7 @@ O site possui:
 - uma página que exibe o arquivo pdf do Termo de Consentimento Livre e Esclarecido;
 - uma página com um formulário para contato com os pesquisadores;
 - uma página de instruções sobre como participar da pesquisa e responder aos questionários;
-- os questionários;
+- os questionários.
 
 Ao concordar em participar da pesquisa, o usuário é direcionado para a página de instruções. Após confirmar que entendeu as instruções, clicando em um botão, o usuário inicia os questionários.
 O primeiro questionário pergunta os dados demográficos. Esses são inseridos uma única vez pelo usuários, mas são enviados para todos os outros questionários.
