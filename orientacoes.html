@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Avaliação de espaços públicos através de ambientes simulados</title>
+		<meta name="keywords" content="Pesquisa, Mestrado, Dissertação, Programa de Pós-Graduação em Arquitetura, Urbanismo e Paisagismo (PPGAUP), Universidade Federal de Santa Maria (UFSM), Laboratório de Psicologia Ambiental (LPA), Simulação Ambiental, Ambientes Simulados, Ambientes Virtuais, Cenários Virtuais, Arquitetura, Urbanismo, Design, Experimento, Questionário, Espaços Públicos, Ruas, Espaços Urbanos, Interfaces Térreas, Fachadas, Percepção, Usuários">
+		<meta charset="utf-8">
+		<meta name="author" content="Carlos Filipe Pontes">
+		<meta name="copyright" content="Carlos Filipe Pontes">
+		<meta name="description" content="Neste site é possível visualizar e avaliar alguns espaços públicos, através do emprego de ambientes simulados">
+		<meta http-equiv="content-type" content="text/html">
+		<style>
+			@font-face {
+				font-family: "Open Sans";
+				src: url("arquivos/OpenSans-Regular.ttf");
+			}
+
+			body {
+				background-color: white;
+				color: black;
+				font-family: "Open Sans", "Segoe WP", "Segoe UI", Helvetica, Arial, sans-serif;
+				text-align: center;
+				vertical-align: middle;
+			}
+
+			#Cabecalho_titulo {
+				background-color: white;
+				color: black;
+				text-align: center;
+				font-style: normal;
+				font-weight: bold;
+				font-family: "Open Sans", "Segoe WP", "Segoe UI", Helvetica, Arial, sans-serif;
+				font-size: xx-large;
+				line-height: normal;
+			}
+
+			#Rodape_lpa_ufsm {
+				background-color: white;
+				color: black;
+				text-align: center;
+				font-size: small;
+				font-family: "Open Sans", "Segoe WP", "Segoe UI", Helvetica, Arial, sans-serif;
+				font-weight: bold;
+				font-style: normal;
+				word-spacing: normal;
+				letter-spacing: normal;
+			}
+
+			button {
+				vertical-align: bottom;
+				border-radius: 10px;
+				position:relative;
+				display: inline-block;
+				width:420px;
+				height:40px;
+				background-color: RoyalBlue;
+				font-family: "Open Sans", "Segoe WP", "Segoe UI", Helvetica, Arial, sans-serif;
+				color: white;
+				font-weight:bold;
+				border-width: 0px;
+				cursor: pointer;
+				text-align: center;
+				font-size: large;
+			}
+	
+			button:hover {
+				border: 3px solid white;
+				background-color: SteelBlue;
+				box-shadow: 0 0 0px 1px SteelBlue;
+				font-weight: bolder;
+			}
+	
+			button:active {
+				background-color: NavyBlue;
+				font-weight: normal;
+				color: Black;
+				box-shadow: 0 0 0 1px NavyBlue;
+				border: 4px solid White;
+			}
+			
+			div {
+				display: inline-block;
+			}
+			
+			table {
+				width: 780px;
+				text-align: center;
+			}
+	
+			.tabela_ds {
+				margin: 0 auto;
+			}
+	
+			td {
+				width: 40px;
+				height: 40px;
+				vertical-align: top;
+				font-size: large;
+			}
+	
+			.td-escala {
+				width: 40px;
+				height: 30px;
+				vertical-align: bottom;
+				font-size: small;
+			}
+			
+			input[type="radio"] {
+				cursor: pointer;
+				width: 20px;
+				height: 20px;
+				accent-color: RoyalBlue;
+			}
+			
+			#mensagem {
+				color: red;
+				font-weight: bold;
+			}
+			
+			fieldset {
+				background-color: white;
+				border: 1px solid black;
+				border-radius: 20px;
+			}
+			
+			.topicos {
+				background-color: #e8e8fa;
+				border: 2px solid #e8e8fa;
+				border-radius: 20px;
+				width: 100%;
+				text-align: center;
+			}
+			
+			.divorientacoes {
+				text-align: center;
+				font-size: medium;
+			}
+			
+			label {
+				text-align: center;
+				font-size: medium;
+				font-weight: bold;
+			}
+			
+			.alerta-js {
+				position: fixed;
+				z-index: 6;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				background-color: rgba(255, 255, 255, 0.95);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+      
+			.alerta-js p {
+				max-width: 600px%;
+				min-width: 450px;
+				font-size: large;
+				font-weight: bold;
+				color: White;
+				text-align: center;
+				border-radius: 40px;
+				border-width: 20px;
+				border-style: solid;
+				border-color: red;
+				background: Red;
+				padding: 5px;
+			}
+
+			.alerta-js p a {
+				color: black;
+				text-decoration: underline;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1 id=Cabecalho_titulo style="text-align: center; font-weight: bold; font-size: x-large;">Avaliação de espaços públicos através de ambientes simulados<br></h1>
+		</header>
+		<div class=divorientacoes style="width: 600px;">
+			<p style="text-align:center; font-size: large;"><b>ORIENTAÇÕES:</b></p>
+			<div class=topicos>
+				<p><b>1. Na página seguinte, preencha os campos com seus dados atuais e clique no botão para iniciar;</b></p>
+			</div>
+			<p> </p>
+			<div class=topicos>
+				<p><b>2. Assista ao vídeo atentamente;</b></p>
+			</div>
+			<p> </p>
+			<div class=topicos>
+				<p><b>3. Responda o questionário conforme a figura a seguir mostra:</b></p>
+				<p><img src="img/diferencial_semantico_exemplo.png" alt="Como responder" title="Como responder" style="text-align: center; width: 458px; height: 150px;"></p>
+				<p>Cada questão traz um par de palavras. Para responder às questões, marque a posição de acordo com o grau de concordância com uma ou outra palavra que melhor descreve como você se sente em relação ao ambiente apresentado no vídeo.</p>
+				<p> </p>
+				<div id="form" style="width: 570px">
+					<form>
+						<fieldset>
+							<legend><b>TREINAMENTO</b></legend>
+						<p>Selecione as opções abaixo, como se estivesse opinando sobre um ambiente, e veja o seu significado:</p>
+						<table style="width: 100%;">
+							<tbody>
+								<tr>
+									<td style="width: 150px;"> </td>
+									<td class="td-escala"><label>-3</label></td>
+									<td class="td-escala"><label>-2</label></td>
+									<td class="td-escala"><label>-1</label></td>
+									<td class="td-escala"><label>0</label></td>
+									<td class="td-escala"><label>+1</label></td>
+									<td class="td-escala"><label>+2</label></td>
+									<td class="td-escala"><label>+3</label></td>
+									<td style="width: 150px;"> </td>
+								</tr>
+								<tr>
+									<td style="text-align: right;">Perigoso</td>
+									<td><input type="radio" name="seguranca" value="-3"></td>
+									<td><input type="radio" name="seguranca" value="-2"></td>
+									<td><input type="radio" name="seguranca" value="-1"></td>
+									<td><input type="radio" name="seguranca" value="0"></td>
+									<td><input type="radio" name="seguranca" value="1"></td>
+									<td><input type="radio" name="seguranca" value="2"></td>
+									<td><input type="radio" name="seguranca" value="3"></td>
+									<td style="text-align: left;">Seguro</td>
+								</tr>
+							</tbody>
+						</table>
+						<br><div id="mensagem"></div>
+						</fieldset>
+					</form>
+				</div>
+				<p></p>
+			</div>
+			<p> </p>
+			<div class=topicos>
+				<p><b>4. Existem nove ambientes para avaliar. Avalie quantos quiser.</b></p>
+				<p>Ao enviar um questionário, outro será carregado automaticamente.<br>
+				Não perca a oportunidade de contribuir com a pesquisa.<br>
+				Avalie o máximo de ambientes que puder.</p>
+			</div>
+		<br><p><a href="inicio.html"><button id="botaoconcordo">Entendi! Quero iniciar o experimento!</button></a></p>
+		<p> </p>
+		<p> </p>
+		<script>
+		// adiciona um evento de mudança aos elementos de entrada do formulário
+		document.querySelectorAll('input[type="radio"]').forEach(function(elem) {
+			elem.addEventListener('change', function() {
+				var mensagemElem = document.querySelector('#mensagem'); // elemento de mensagem
+				var valor = parseInt(this.value); // obtém o valor do input selecionado
+				var mensagem = ""; // inicializa a mensagem a ser exibida
+
+				// seleciona a mensagem correspondente ao valor do input
+				switch (valor) {
+					case 3:
+						mensagem = "Concordo plenamente que o ambiente é seguro.";
+						break;
+					case 2:
+						mensagem = "Concordo que o ambiente é seguro.";
+						break;
+					case 1:
+						mensagem = "Concordo parcialmente que o ambiente é seguro.";
+						break;
+					case 0:
+						mensagem = "Não considero o ambiente perigoso ou seguro.";
+						break;
+					case -1:
+						mensagem = "Concordo parcialmente que o ambiente é perigoso.";
+						break;
+					case -2:
+						mensagem = "Concordo que o ambiente é perigoso.";
+						break;
+					case -3:
+						mensagem = "Concordo plenamente que o ambiente é perigoso.";
+						break;
+				}
+
+				// exibe a mensagem acima do formulário
+				mensagemElem.textContent = mensagem;
+			});
+		});
+		</script>
+		<noscript>
+			<div class="alerta-js">
+				<p>Atenção:
+				<br><br>Para que este site funcione corretamente, é necessário que o JavaScript esteja habilitado em seu navegador.
+				<br>Não utilize extensões que impeçam o uso de scripts neste site ou desabilite o JavaScript.
+				<br><br>Por favor, habilite o JavaScript e recarregue a página.</p>
+			</div>
+		</noscript>
+	</body>
+</html>

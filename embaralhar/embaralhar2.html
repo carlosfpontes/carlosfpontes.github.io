@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Embaralhar estímulos</title>
+	<meta name="keywords" content="Pesquisa, Embaralhamento, Aleatório, Estímulos">	
+	<meta charset="utf-8">
+	<meta name="author" content="Carlos Filipe Pontes">
+	<meta name="copyright" content="Carlos Filipe Pontes">
+	<meta name="description" content="Neste site é possível criar listas de estímulos embaralhados aleatoriamente">
+	<meta http-equiv="content-type" content="text/html">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="script.js"></script>
+</head>
+<body>
+	<header>
+		<h1 id=Cabecalho_titulo style="text-align: center; font-weight: bold;"><br>Embaralhar estímulos<br></h1>
+	</header>
+	<p>O site utiliza o algoritmo de Fisher-Yates para embaralhar estímulos aleatoriamente.<br>É possível criar quantas combinações quiser, basta preencher o formulário abaixo.</p><br>
+<div align=center><form>
+	<table>
+		<tr>
+			<td><label for="numStimuli">Número de estímulos:</label></td>
+			<td><input type="number" id="numStimuli" name="numStimuli" min="1" required></td>
+		</tr>
+		<tr>
+			<td><label for="numCombinations">Número de combinações:</label></td>
+			<td><input type="number" id="numCombinations" name="numCombinations" min="1" required></td>
+		</tr>
+		<tr>
+			<td><label for="stimulusNames">Nomes dos estímulos (separados por vírgula):</label></td>
+			<td><input type="text" id="stimulusNames" name="stimulusNames" required></td>
+		</tr>
+	</table>
+
+	<input type="button" value="Embaralhar estímulos" onclick="shuffleStimuli()">
+</form></div>
+
+
+	<div id="combinationsBox">
+		<h2>Combinações</h2>
+		<div align=center><br><button id="copyButton" onclick="copyToClipboard()">Copiar</button><br></div>
+		<ul id="combinationsList"></ul>
+	</div>
+</body>
+</html>

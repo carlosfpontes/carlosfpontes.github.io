@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Embaralhar estímulos</title>
+	<meta name="keywords" content="Pesquisa, Embaralhamento, Aleatório, Estímulos">	
+	<meta charset="utf-8">
+	<meta name="author" content="Carlos Filipe Pontes">
+	<meta name="copyright" content="Carlos Filipe Pontes">
+	<meta name="description" content="Neste site é possível criar listas de estímulos embaralhados aleatoriamente">
+	<meta http-equiv="content-type" content="text/html">
+
+	<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+form {
+    margin: 20px;
+}
+
+label {
+    display: inline-block;
+    width: 220px;
+    text-align: left;
+}
+
+input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+input[type="text"] {
+    width: 250px;
+    height: 50px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+input[type="button"] {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#combinationsBox {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+#combinationsList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#combinationsList li {
+    margin-bottom: 5px;
+}
+
+#copyButton {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    margin-top: 10px;
+    display: none;
+} 
+	</style>
+
+</head>
+
+
+<body>
+	<header>
+		<h1 id=Cabecalho_titulo style="text-align: center; font-weight: bold;"><br>Embaralhar estímulos<br></h1>
+	</header>
+	<p>O site utiliza o algoritmo de Fisher-Yates para embaralhar estímulos aleatoriamente.<br>É possível criar quantas combinações quiser, basta preencher o formulário abaixo.</p><br>
+<div align=center><form>
+	<table>
+		<tr>
+			<td><label for="numStimuli">Número de estímulos:</label></td>
+			<td><input type="number" id="numStimuli" name="numStimuli" min="1" required></td>
+		</tr>
+		<tr>
+			<td><label for="numCombinations">Número de combinações:</label></td>
+			<td><input type="number" id="numCombinations" name="numCombinations" min="1" required></td>
+		</tr>
+		<tr>
+			<td><label for="stimulusNames">Nomes dos estímulos (separados por vírgula):</label></td>
+			<td><input type="text" id="stimulusNames" name="stimulusNames" required></td>
+		</tr>
+	</table>
+
+	<input type="button" value="Embaralhar estímulos" onclick="shuffleStimuli()">
+</form></div>
+
+
+	<div id="combinationsBox">
+		<h2>Combinações</h2>
+		<div align=center><br><button id="copyButton" onclick="copyToClipboard()">Copiar</button><br></div>
+		<ul id="combinationsList"></ul>
+	</div>
+
+
+<script>
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+function shuffleStimuli() {
+    // Get form input values
+    var numStimuli = document.getElementById("numStimuli").value;
+    var stimulusNames = document.getElementById("stimulusNames").value.split(",");
+    var numCombinations = document.getElementById("numCombinations").value;
+
+    // Create array of stimuli
+    var stimuli = [];
+    for (var i = 0; i < numStimuli; i++) {
+        stimuli.push(stimulusNames[i]);
+    }
+
+    // Shuffle stimuli and generate combinations
+    var combinations = [];
+    for (var i = 0; i < numCombinations; i++) {
+        var shuffledStimuli = shuffle(stimuli.slice());
+        combinations.push(shuffledStimuli);
+    }
+
+    // Display combinations in list
+    var list = document.getElementById("combinationsList");
+    list.innerHTML = "";
+    for (var i = 0; i < combinations.length; i++) {
+        var listItem = document.createElement("li");
+        listItem.innerHTML = combinations[i].join(", ");
+        list.appendChild(listItem);
+    }
+
+    // Show copy button
+    var copyButton = document.getElementById("copyButton");
+    copyButton.style.display = "block";
+}
+
+function copyToClipboard() {
+    var list = document.getElementById("combinationsList");
+    var text = "";
+    for (var i = 0; i < list.children.length; i++) {
+        text += list.children[i].innerHTML + "\n";
+    }
+    navigator.clipboard.writeText(text);
+    alert("Copiado para a área de transferência!");
+}
+</script>
+
+
+<noscript>
+<div class="alerta-js">
+<p>Atenção: Para que este site funcione corretamente, é necessário que o JavaScript esteja habilitado em seu navegador.
+<br>Não utilize extensões que impeçam o uso de scripts neste site ou desabilite o JavaScript.
+<br><br>Por favor, habilite o JavaScript e atualize a página.</p>
+</div>
+</noscript>
+
+
+</body>
+</html>
