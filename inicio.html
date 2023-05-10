@@ -52,13 +52,20 @@
 				</select><br><br>
 
 				<label for="profession">Profissão:</label><br>
-				<select id="profession" name="profession" required>
+				<select onchange="mostrarCampoSemestre()" id="profession" name="profession" required>
 					<option value="profissional_arq_des_eng">Profissional de Arquitetura, Design, Engenharia ou áreas afins</option>
 					<option value="estudante_arq_des_eng">Estudante de Arquitetura, Design, Engenharia ou áreas afins</option>
 					<option value="profissional_de_outras_areas">Profissional ou estudante de outras áreas</option>
 					<option value="prefiro_nao_informar_profissao">Prefiro não informar</option>
-				</select><br><br>
-
+				</select><br>
+				
+				<div id="campoSemestre" style="display: none;">
+					<br>
+					<label for="semestre">Semestre:</label><br>
+					<input type="text" id="semestre" name="semestre" required><br>
+				</div>
+				
+				<br>
 				<label for="city">Cidade em que reside:</label><br>
 				<input type="text" id="city" name="city" required><br>
 
@@ -74,6 +81,18 @@
 		</div>
 	
 		<script>
+			function mostrarCampoSemestre() {
+			var ocupacao = document.getElementById("profession").value;
+			var campoSemestre = document.getElementById("campoSemestre");
+
+			if (ocupacao === "estudante_arq_des_eng") {
+				campoSemestre.style.display = "block";
+			} else {
+				campoSemestre.style.display = "none";
+			}
+			}
+			
+
 			// Obter a data atual
 				var dataAtual = new Date();
   
@@ -110,12 +129,13 @@
 			const city = document.getElementById("city").value;
 			const data = document.getElementById("data").value;
 			const codigo = document.getElementById("codigo").value;
+			const semestre = document.getElementById("semestre").value;
 
 			// Verifica se todos os campos obrigatórios foram preenchidos
 			if (age && education && gender && profession && city) {
 
 			// Constrói a URL com os parâmetros do formulário
-			const url = `pesquisa.html?age=${age}&education=${education}&gender=${gender}&profession=${profession}&city=${city}&data=${data}&codigo=${codigo}`;
+			const url = `pesquisa.html?age=${age}&education=${education}&gender=${gender}&profession=${profession}&city=${city}&data=${data}&codigo=${codigo}&semestre=${semestre}`;
 
 			// Redireciona para a página de pesquisa
 			window.location.href = url;
