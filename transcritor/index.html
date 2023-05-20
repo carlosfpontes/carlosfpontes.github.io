@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Avaliação de espaços públicos através de ambientes simulados</title>
+		<meta name="keywords" content="Pesquisa, Mestrado, Dissertação, Programa de Pós-Graduação em Arquitetura, Urbanismo e Paisagismo (PPGAUP), Universidade Federal de Santa Maria (UFSM), Laboratório de Psicologia Ambiental (LPA), Simulação Ambiental, Ambientes Simulados, Ambientes Virtuais, Cenários Virtuais, Arquitetura, Urbanismo, Design, Experimento, Questionário, Espaços Públicos, Ruas, Espaços Urbanos, Interfaces Térreas, Fachadas, Percepção, Usuários">
+		<meta charset="utf-8">
+		<meta name="author" content="Carlos Filipe Pontes">
+		<meta name="copyright" content="Carlos Filipe Pontes">
+		<meta name="description" content="Neste site é possível visualizar e avaliar alguns espaços públicos, através do emprego de ambientes simulados">
+		<meta http-equiv="content-type" content="text/html">
+		<link rel="stylesheet" href="style.css">
+		<style>
+			div {
+				display: inline-block;
+			}
+
+			.divformulariodados {
+				background-color: #e8e8fa;
+				border: 2px solid #f9f9fb;
+				border-radius: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1 id=Cabecalho_titulo style="text-align: center; font-weight: bold; font-size: x-large;">Avaliação de espaços públicos através de ambientes simulados<br><p></p></h1>
+		</header>
+		<p> </p>
+		<div class="divformulariodados" style="width: 580px;">
+			<p> </p>
+			<p style="font-weight: bold;">DADOS DEMOGRÁFICOS</p>
+			<p> </p>
+			<form>
+				<label for="age">Idade:</label><br>
+				<input type="number" id="age" name="age" required><br><br>
+
+				<label for="education">Escolaridade:</label><br>
+				<select id="education" name="education" required>
+					<option value="ensino_fundamental">Ensino Fundamental</option>
+					<option value="ensino_medio">Ensino Médio</option>
+					<option value="ensino_superior">Ensino Superior</option>
+					<option value="pos_graduacao">Pós-graduação</option>
+					<option value="prefiro_nao_informar_escolaridade">Prefiro não informar</option>
+				</select><br><br>
+
+				<label for="gender">Gênero:</label><br>
+				<select id="gender" name="gender" required>
+					<option value="masculino">Masculino</option>
+					<option value="feminino">Feminino</option>
+					<option value="outro_genero">Outro</option>
+					<option value="prefiro_nao_informar_genero">Prefiro não informar</option>
+				</select><br><br>
+
+				<label for="profession">Profissão:</label><br>
+				<select onchange="mostrarCampoSemestre()" id="profession" name="profession" required>
+					<option value="profissional_arq_des_eng">Profissional de Arquitetura, Design, Engenharia ou áreas afins</option>
+					<option value="estudante_arq_des_eng">Estudante de Arquitetura, Design, Engenharia ou áreas afins</option>
+					<option value="profissional_de_outras_areas">Profissional ou estudante de outras áreas</option>
+					<option value="prefiro_nao_informar_profissao">Prefiro não informar</option>
+				</select><br>
+				
+				<div id="campoSemestre" style="display: none;">
+					<br>
+					<label for="semestre">Semestre:</label><br>
+					<input type="text" id="semestre" name="semestre" required><br>
+				</div>
+				
+				<br>
+				<label for="city">Cidade em que reside:</label><br>
+				<input type="text" id="city" name="city" required><br><br>
+
+				<label style="display: none;">Data:</label>
+				<input style="display: none;" type="text" id="data" disabled>
+				
+				<label>Código:</label><br>
+				<input type="text" id="codigo" disabled><br><br>
+
+				<button type="button" onclick="enviarDados()">Iniciar</button><br>
+			</form>
+			<br>
+		</div>
+	
+		<script>
+			function mostrarCampoSemestre() {
+			var ocupacao = document.getElementById("profession").value;
+			var campoSemestre = document.getElementById("campoSemestre");
+
+			if (ocupacao === "estudante_arq_des_eng") {
+				campoSemestre.style.display = "block";
+			} else {
+				campoSemestre.style.display = "none";
+			}
+			}
+			
+
+			// Obter a data atual
+				var dataAtual = new Date();
+  
+			// Formatar a data no formato ANO_MÊS_DIA_HORA_MINUTO_SEGUNDO
+			var dataFormatada = dataAtual.getFullYear() + '_' + 
+								(dataAtual.getMonth() + 1).toString().padStart(2, '0') + '_' + 
+								dataAtual.getDate().toString().padStart(2, '0') + '_' + 
+								dataAtual.getHours().toString().padStart(2, '0') + '_' + 
+								dataAtual.getMinutes().toString().padStart(2, '0') + '_' + 
+								dataAtual.getSeconds().toString().padStart(2, '0');
+  
+			// Gerar um código aleatório com 3 letras e 7 números
+			var codigoAleatorio = '';
+			var letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+			var numeros = '0123456789';
+			for (var i = 0; i < 5; i++) {
+				codigoAleatorio += letras.charAt(Math.floor(Math.random() * letras.length));
+			}
+			for (var i = 0; i < 5; i++) {
+				codigoAleatorio += numeros.charAt(Math.floor(Math.random() * numeros.length));
+			}
+  
+			// Preencher os campos de data e código com os valores obtidos
+			document.getElementById('data').value = dataFormatada;
+			document.getElementById('codigo').value = codigoAleatorio;
+		
+		
+			function enviarDados() {
+			// Obtém os valores dos campos do formulário
+			const age = document.getElementById("age").value;
+			const education = document.getElementById("education").value;
+			const gender = document.getElementById("gender").value;
+			const profession = document.getElementById("profession").value;
+			const city = document.getElementById("city").value;
+			const data = document.getElementById("data").value;
+			const codigo = document.getElementById("codigo").value;
+			const semestre = document.getElementById("semestre").value;
+
+			// Verifica se todos os campos obrigatórios foram preenchidos
+			if (age && education && gender && profession && city) {
+
+			// Constrói a URL com os parâmetros do formulário
+			const url = `pesquisa.html?age=${age}&education=${education}&gender=${gender}&profession=${profession}&city=${city}&data=${data}&codigo=${codigo}&semestre=${semestre}`;
+
+			// Redireciona para a página de pesquisa
+			window.location.href = url;
+			} else {
+
+			// Exibe uma mensagem de erro informando que todos os campos obrigatórios devem ser preenchidos
+			alert("Por favor, preencha todos os campos.");
+			}
+			}
+		</script>
+		<noscript>
+			<div class="alerta-js">
+				<p>Atenção: Para que este site funcione corretamente, é necessário que o JavaScript esteja habilitado em seu navegador.
+				<br>Não utilize extensões que impeçam o uso de scripts neste site ou desabilite o JavaScript.
+				<br><br>Por favor, habilite o JavaScript e retorne ao início, clicando <a href="orientacoes.html">aqui</a>.</p>
+			</div>
+		</noscript>
+	</body>
+</html>
