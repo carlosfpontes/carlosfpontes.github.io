@@ -1,0 +1,74 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+form {
+    margin: 20px;
+}
+
+label {
+    display: inline-block;
+    width: 220px;
+    text-align: left;
+}
+
+input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+input[type="text"] {
+    width: 250px;
+    height: 50px;
+    padding: 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+input[type="button"] {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#combinationsBox {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+#combinationsList {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#combinationsList li {
+    margin-bottom: 5px;
+}
+
+#copyButton {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: #fff;
+    margin-top: 10px;
+    display: none;
+} 
