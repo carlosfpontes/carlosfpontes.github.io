@@ -1,0 +1,88 @@
+/* enable scrolling by setting height to auto */
+
+html {
+	overflow-y: scroll;
+}
+
+body {
+  position: absolute;
+  height: auto; 
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  line-height: 1.2em;
+} 
+
+h1 { font-size: 1.4em; }
+h1 { font-size: 1.2em; }
+
+h1, h2 {
+	font-weight: bold;
+}
+
+h1, h2, p {
+	margin: 0 0 1em;
+}
+
+em {
+	font-style: italic;
+}
+
+#readyContainer, #about {
+	position:relative; 
+	width: 90%; 
+	color: black; 
+	background-color: white; 
+	padding: 10px; 
+	margin:10px auto; 
+	z-index:10;
+}
+
+#debug {
+	position:absolute;
+	bottom:50px;
+	left:0px;
+	/* display: none; */
+}
+
+#debug2 {
+	position:absolute;
+	bottom:50px;
+	right:150px;
+}
+
+#progress {
+	position:absolute;
+	bottom:10px;
+	right:10px;
+}
+
+.button, .goScene {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  background: #2abd33;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.button:hover, .goScene:hover {
+  background: #37db3c;
+  text-decoration: none;
+}
+
+.centered {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 100px;
+	/* display: none; */
+}
+
+/* styles for slideshow.js */
+.fadein { position:relative;}
+.fadein img { position:absolute; left:0; top:0; transition:opacity 1s; opacity:1; }
+.fadein img.is-hidden {  position:absolute; left:0; top:0; opacity:0; }
