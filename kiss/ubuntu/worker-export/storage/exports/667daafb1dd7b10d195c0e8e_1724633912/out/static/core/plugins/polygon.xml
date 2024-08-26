@@ -1,0 +1,98 @@
+<krpano>
+  <!-- The new hotspots need your style name for the ouput code. -->
+  <!-- <phe_settings style_name="poly_hotspot_text" /> -->
+  <style name="poly_hotspot_text"
+	onover="copy(layer[tooltip].html, tooltip);
+	               set(layer[tooltip].visible, true);
+	               tween(layer[tooltip].alpha, 1.0, 0.5);
+	               asyncloop(hovering, copy(layer[tooltip].x,mouse.stagex); copy(layer[tooltip].y,mouse.stagey); );"
+	/>
+  <!-- the style for your hotspot ..ONLY THE NAME WILL BE USED IN THE OUTPUT CODE!!!! -->
+  <style name="newpoly" fillcolor="0x000000" fillalpha="0.0" borderwidth="3.0" bordercolor="0xffffff" borderalpha="1.0" onover="tween(fillalpha,1);" onout="tween(fillalpha,0.0);" onclick="showlog();" ondown.touch="onover(); asyncloop(pressed, onhover(); );" onup.touch="onout();" />
+  <events
+		onkeydown="if(keycode == 32, stopdraw(get(hsname)));"
+		onclick="if(drawing == true, addpoint());"
+	/>
+  <action name="startdraw" >
+		trace(hp-%1);
+		set(drawing, true);
+		set(hsname, hp-%1);
+		addhotspot(get(hsname));
+		hotspot[get(hsname)].loadstyle(newpoly|poly_hotspot_text);
+		set(hotspot[get(hsname)].enabled, false);
+		set(hotspot[get(hsname)].tooltip, 2542323);
+		set(pid, 0);
+  </action>
+  <action name="stopdraw">
+		set(drawing, false);
+		MakeCode(%1);
+	</action>
+  <action name="addpoint">
+		screentosphere(mouse.x, mouse.y, toh, tov);
+		set(hotspot[get(hsname)],point[get(pid)].ath=get(toh),point[get(pid)].atv=get(tov));
+		if(_points,
+			set(_points, calc:_points + '&#xA;&#09;' + data[html_point].content + 'ath="' + toh + '" atv="' + tov + '"' + data[html_/exit].content);
+		,
+			set(_points, calc:'&#09;' + data[html_point].content + 'ath="' + toh + '" atv="' + tov + '"' + data[html_/exit].content);
+		);
+		updatescreen();
+		mousemove();
+		inc(pid);
+	</action>
+  <action name="mousemove">
+		screentosphere(mouse.x, mouse.y, toh, tov);
+		set(hotspot[get(hsname)].point[get(pid)].ath, get(toh));
+		set(hotspot[get(hsname)].point[get(pid)].atv, get(tov));
+		updatescreen();
+		if(drawing == true, delayedcall(0.0, mousemove()));
+	</action>
+  <action name="MakeCode">
+		trace(points_polygon);
+		set(points_polygon, get(_points));
+		set(_phestyle, calc:phe_settings.style_name);
+		set(hotspot[%1].enabled, true);
+		set(_points, );
+  </action>
+  <action name="destroydraw">
+    <!-- removehotspot(get(hsname)); -->
+		set(points_polygon, );
+		set(hsname, )
+  </action>
+  <data name="html_point">
+    <![CDATA[<point ]]>
+  </data>
+  <data name="html_/close">
+    <![CDATA[ >]]>
+  </data>
+  <data name="html_/exit">
+    <![CDATA[ />]]>
+  </data>
+  <data name="html_hotspot">
+    <![CDATA[<hotspot ]]>
+  </data>
+  <data name="html_hotspotend">
+    <![CDATA[</hotspot>]]>
+  </data>
+  <data name="html_quoteopen">
+    <![CDATA[<!-- ]]>
+  </data>
+  <data name="html_quoteend"><![CDATA[ -->]]>
+  </data>
+  <layer name="tooltip" keep="true"
+	       url="%SWFPATH%/plugins/textfield.swf"
+	       parent="STAGE"
+	       visible="true" alpha="0"
+	       enabled="true"
+	       align="lefttop"
+	       edge="bottom"
+	       oy="-2"
+	       autowidth="true"
+	       autoheight="true"
+	       background="false" backgroundcolor="0xFFFFFF" backgroundalpha="1.0"
+	       txtshadow="0 0 6.0 0x000 1.0"
+	       css="text-align:center; color:#FFFFFF; font-family:Arial; font-weight:bold; font-size:14px;"
+	       html=""
+         zorder="-1"
+				 x="0" y="0"
+	       />
+</krpano>

@@ -1,0 +1,122 @@
+<krpano>
+  <krpano tour_gyroscopedevices="true" devices="no-desktop.and.html5"/>
+  <action name="draghotspot">
+    <![CDATA[
+        if(%1 != dragging,
+        spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery);
+        sub(drag_adjustx, mouse.stagex, hotspotcenterx);
+        sub(drag_adjusty, mouse.stagey, hotspotcentery);
+        draghotspot(dragging);
+        ,
+        if(pressed,
+        sub(dx,mouse.stagex,drag_adjustx);
+        sub(dy,mouse.stagey,drag_adjusty);
+        screentosphere(dx,dy,ath,atv);
+        if(onDrag!==null, onDrag() );
+        delayedcall(0, draghotspot(dragging) );
+        , if(onDragEnd!==null, onDragEnd() );
+        );
+        );
+        ]]>
+  </action>
+  <action name="cm_look_straight">
+    if(view.vlookat LT -80 OR view.vlookat GT +80, tween(view.vlookat, 0.0, 1.0, easeInOutSine); tween(view.fov, 100, distance(150,0.8)); );
+  </action>
+  <action name="cm_normal_view">
+    if(get("fov"), trace(get("fov"));, set("fov", get(view.fov)););
+    cm_look_straight();
+    tween(view.fov, get("fov"), distance(150,0.5));
+    tween(view.architectural, 0.0, distance(1.0,0.5));
+    tween(view.pannini, 0.0, distance(1.0,0.5));
+    tween(view.fisheye, 0.0, distance(1.0,0.5));
+  </action>
+  <action name="cm_architectural_view">
+    cm_look_straight(); tween(view.architectural, 1.0, distance(1.0,0.5)); tween(view.pannini, 0.0, distance(1.0,0.5)); tween(view.fisheye, 0.0, distance(1.0,0.5));
+  </action>
+  <action name="cm_fisheye_view">
+    cm_look_straight(); tween(view.architectural, 0.0, distance(1.0,0.5)); tween(view.pannini, 0.0, distance(1.0,0.5)); tween(view.fisheye, 0.35, distance(1.0,0.5));
+  </action>
+  <action name="cm_stereographic_view">
+    cm_look_straight(); tween(view.architectural, 0.0, distance(1.0,0.5)); tween(view.pannini, 0.0, distance(1.0,0.5)); tween(view.fisheye, 1.0, distance(1.0,0.8));
+  </action>
+  <action name="cm_pannini_view">
+    cm_look_straight(); tween(view.architectural, 0.0, distance(1.0,0.5)); tween(view.pannini, 1.0, distance(1.0,0.8)); if(view.fisheye LT 0.1, tween(view.fisheye, 1.0, distance(1.0,0.8)); );
+  </action>
+  <action name="cm_littleplanet_view">
+    if(get("fov"), trace(get("fov"));, set("fov", get(view.fov)););
+    cm_look_straight();
+    set(view.limitview, range);
+    set(view.stereographic, true);
+    <!-- tween(view.maxpixelzoom,  null, distance(1.0,0.25)); -->
+    tween(view.fovtype, VFOV, distance(0.5,0.25));
+    <!-- tween(view.fisheyefovlink, 0.5, distance(1.0,0.5)); -->
+    tween(view.architectural, 0.0, distance(1.0,0.5));
+    tween(view.pannini, 0.0, distance(1.0,0.5));
+    tween(view.distortionfovlink, 1.0, distance(1.0,0.5));
+    tween(view.distortion, 1.0, distance(1.0,0.8));
+    tween(view.fisheye, 1.0, distance(1.0,0.8));
+    tween(view.fov, 150, distance(150,0.8));
+    tween(view.vlookat, 90, distance(100,0.8));
+    add(new_hlookat, view.hlookat, 123.0);
+		tween(view.hlookat, get(new_hlookat), distance(100,0.8));
+  </action>
+  <action name="startrotation">
+        debug("speed:", %1, " wait_time:", %2);
+        set(autorotate.enabled,true);
+        set(autorotate.speed, %1);
+        set(autorotate.waittime, %2);
+  </action>
+  <action name="stoprotation">
+        set(autorotate.enabled,false);
+  </action>
+  <action name="normalview">
+    tween(view.hlookat, %1, %4, easeInOutQuad); tween(view.vlookat, %2, %4, easeInOutQuad); tween(view.fov, %3, %4, easeInOutQuad); tween(view.fisheye, 0.0, %4, easeInOutQuad); wait(2.7); set(display.flash10, on);
+  </action>
+  <action name="mirror_ball_view">
+    if(get("fov"), trace(get("fov"));, set("fov", get(view.fov)););
+    set(view.stereographic, false);
+    tween(view.architectural, 0.0, distance(1.0,0.5));
+    tween(view.pannini, 0.0, distance(1.0,0.5));
+    tween(view.distortionfovlink, 1.0, distance(1.0,0.5));
+    tween(view.distortion, 3.0, distance(1.0,0.8));
+    tween(view.fov, 180, distance(150,0.8));
+    tween(view.vlookat, 0, distance(100,0.8));
+  </action>
+  <!-- EVENT SHOW CALLOUT HOTSPOT -->
+  <!-- EVENT SHOW CALLOUT HOTSPOT -->
+  <!-- EVENT SHOW CALLOUT HOTSPOT -->
+  <!-- EVENT SHOW CALLOUT HOTSPOT -->
+  <!-- <events onviewchange="update_hotspot_visiblity()" /> -->
+  <action name="addClass" type="Javascript">
+    <![CDATA[
+      var collection = args[1];
+      if (collection && collection.item(0)) {
+        const parent = collection.item(0);
+        const target = parent.querySelector('.calloutWrapper');
+        if(target) target.classList.add('show');
+      }
+    ]]>
+  </action>
+  <action name="removeClass" type="Javascript">\
+    <![CDATA[
+      var collection = args[1];
+      if (collection && collection.item(0)) {
+        const parent = collection.item(0);
+        const target = parent.querySelector('.calloutWrapper');
+        if(target) target.classList.remove('show');
+      }
+    ]]>
+  </action>
+  <action name="update_hotspot_visiblity">
+    for(set(i,0), i LT hotspot.count, inc(i),
+      copy(hs, hotspot[get(i)]);
+      if(hs.styleType == 'callout',
+        getlooktodistance(d, hs.ath, hs.atv);
+        set(alt, get(hs.sprite.children));
+        if(d LT 25, addClass(get(alt));,
+          removeClass(get(alt));
+        );
+      );
+    );
+  </action>
+</krpano>

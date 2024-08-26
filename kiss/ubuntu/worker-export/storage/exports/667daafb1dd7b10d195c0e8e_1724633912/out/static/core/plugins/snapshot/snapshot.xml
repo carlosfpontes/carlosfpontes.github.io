@@ -1,0 +1,93 @@
+<krpano>
+  <include url="%$mypath%/core/plugins/snapshot/panoshot/panoshoot.xml"/>
+  <panoshot
+    show_snapshot_onstart="false"
+
+    maxsize="10000"
+    jpeg_quality="1.0"
+    watermark="get:watermarkEnabled"
+    snapshot_name="360_Snapshot"
+
+    show_ratio="true"
+    ratio_icon_position_align="right"
+    viewfinder_ratio_width="16"
+    viewfinder_ratio_height="9"
+    viewfinder_padding="100"
+    viewfinder_glass="true"
+    viewfinder_bg_color="0x000000"
+    viewfinder_bg_alpha="0.7"
+    viewfinder_border="3 0xffffff 1"
+    snapshot_icon_y="500"
+
+
+    email_subject="Check this out !"
+    email_line1="I took this picture !"
+    email_line2="Take yours >"
+
+
+    show_msg="true"
+    tutorial_msg="Adjust your view by [b]moving[/b] and [b]zooming in and out[/b] to capture the perfect shot."
+    share_msg="[b]Amazing shot ![/b][br]It deserves to be seen by everyone on your social media networks. [br]&#8744;"
+    share_txt="Share on"
+
+    mobile_button_align="bottom"
+    mobile_button_edge=""
+    mobile_button_x=""
+    mobile_button_y="50"
+
+    plugin_path="%$mypath%/core/plugins/snapshot/panoshot/"
+    sound_path="%$mypath%/core/plugins/snapshot/panoshot/"
+    external_php_server="true"
+    external_php_server_path="https://panoee.com/screenshot/"
+  />
+  <social_but name="panoshot_facebook" show="false"/>
+  <social_but name="panoshot_twitter" show="false"/>
+  <social_but name="panoshot_googleplus" show="false"/>
+  <social_but name="panoshot_linkedin" show="false"/>
+  <social_but name="panoshot_pininterest" show="false"/>
+  <social_but name="panoshot_tumblr" show="false"/>
+  <social_but name="panoshot_vk" show="false"/>
+  <social_but name="panoshot_weibo" show="false"/>
+  <social_but name="panoshot_email" show="true"/>
+  <social_but name="panoshot_download" show="true"/>
+  <!-- <layer name="show_snapshot_UI" align="bottom" url="%$mypath%/core/plugins/snapshot/panoshot/snapshot.png" onclick="show_snapshot(true);" y="50" devices="desktop"/> -->
+  <action name="mysnapshot">
+    trace(%1);
+	  if(%1 == true,set(layer[show_snapshot_UI].visible,false); hideHTML();,set(layer[show_snapshot_UI].visible,true); showHTML();)
+	</action>
+  <action name="hideHTML" type="Javascript">
+    <![CDATA[
+      const header = document.getElementById('themeHeader');
+      const listScene = document.getElementById('themeListScene');
+      const controlbar = document.getElementById('themeControlbar');
+      const postScene = document.getElementById('themePostScene');
+      const copyRight = document.getElementById('themeCopyRight');
+      const sideToolbar = document.getElementById('themeSideToolbar');
+      if(header) header.style.display = 'none';
+      if(controlbar) controlbar.style.display = 'none';
+      if(listScene) listScene.style.display = 'none';
+      if(postScene) postScene.style.display = 'none';
+      if(copyRight) copyRight.style.display = 'none';
+      if(sideToolbar) sideToolbar.style.display = 'none';
+    ]]>
+  </action>
+  <action name="showHTML" type="Javascript">
+    <![CDATA[
+      const header = document.getElementById('themeHeader');
+      const listScene = document.getElementById('themeListScene');
+      const controlbar = document.getElementById('themeControlbar');
+      const postScene = document.getElementById('themePostScene');
+      const copyRight = document.getElementById('themeCopyRight');
+      const sideToolbar = document.getElementById('themeSideToolbar');
+      if(header) header.style.removeProperty ? header.style.removeProperty('display') : header.style.removeAttribute('display');
+      if(controlbar) controlbar.style.removeProperty ? controlbar.style.removeProperty('display') : controlbar.style.removeAttribute('display');
+      if(listScene) listScene.style.removeProperty ? listScene.style.removeProperty('display') : listScene.style.removeAttribute('display');
+      if(postScene) postScene.style.removeProperty ? postScene.style.removeProperty('display') : postScene.style.removeAttribute('display');
+      if(copyRight) copyRight.style.removeProperty ? copyRight.style.removeProperty('display') : copyRight.style.removeAttribute('display');
+      if(sideToolbar) sideToolbar.style.removeProperty ? sideToolbar.style.removeProperty('display') : sideToolbar.style.removeAttribute('display');
+    ]]>
+  </action>
+  <action name="flash">
+    trace('Snapshot button clicked')
+  </action>
+</krpano>

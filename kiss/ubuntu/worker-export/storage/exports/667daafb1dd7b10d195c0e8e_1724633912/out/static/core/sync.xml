@@ -1,0 +1,51 @@
+<krpano>
+  <!-- oncontextmenu="sync_to_other_viewer(get(timertick));"
+		onmousedown="sync_to_other_viewer(get(timertick));" -->
+  <events
+    name="sync" keep="false"
+		onmousewheel="sync_to_other_viewer();"
+		onviewchange="if(dragged === true, sync_to_other_viewer())"
+		onmousedown="stopdelayedcall(delay_task); set(dragged,true);"
+		onmouseup="delayedcall(delay_task, 2, set(dragged,false));"
+	 />
+
+  <events name="nadirlogorotation" onviewchange="if(hotspot[nadirlogo], if(hotspot[nadirlogo].rotatewithview,copy(hotspot[nadirlogo].rotate,view.hlookat);););"/>
+
+  <action name="sync_to_other_viewer" type="Javascript">
+    <![CDATA[
+      if (window.listKrpanoInstance && window.listKrpanoInstance.length > 1 && krpano.get("panoId")) {
+        const krpanoviewer = krpano;
+        const view_fov = krpanoviewer.get("view.fov");
+        const view_hlookat = krpanoviewer.get("view.hlookat");
+        const view_vlookat = krpanoviewer.get("view.vlookat");
+        const latest_view_fov = krpanoviewer.get("lastest_view_fov");
+        const latest_view_hlookat = krpanoviewer.get("lastest_view_hlookat");
+        const latest_view_vlookat = krpanoviewer.get("lastest_view_vlookat");
+        if(view_hlookat !== latest_view_hlookat || view_vlookat !== latest_view_vlookat || view_fov !== latest_view_fov) {
+          krpanoviewer.set("lastest_view_hlookat", view_hlookat);
+          krpanoviewer.set("lastest_view_vlookat", view_vlookat);
+          const arrs = window.listKrpanoInstance;
+          arrs.filter(item => item !== krpanoviewer.get("panoId")).forEach(item => {
+            var otherviewer = window[item];
+            if (otherviewer && otherviewer.get)
+            {
+              var otherkrpano = otherviewer.get("global");
+              otherkrpano.set("syncother",    false);
+              otherkrpano.set("view.hlookat", krpanoviewer.get("view.hlookat"));
+              otherkrpano.set("view.hlookatmin", krpanoviewer.get("view.hlookatmin"));
+              otherkrpano.set("view.hlookatmax", krpanoviewer.get("view.hlookatmax"));
+              otherkrpano.set("view.vlookat", krpanoviewer.get("view.vlookat"));
+              otherkrpano.set("view.vlookatmin", krpanoviewer.get("view.vlookatmin"));
+              otherkrpano.set("view.vlookatmax", krpanoviewer.get("view.vlookatmax"));
+              otherkrpano.set("view.fov",     krpanoviewer.get("view.fov"));
+              otherkrpano.set("view.fovmax",     krpanoviewer.get("view.fovmax"));
+              otherkrpano.set("view.fovmin",     krpanoviewer.get("view.fovmin"));
+              otherkrpano.set("view.limitview",     krpanoviewer.get("view.limitview"));
+              otherkrpano.set("view.fisheye",     krpanoviewer.get("view.fisheye"));
+            }
+          });
+        }
+      }
+    ]]>
+  </action>
+</krpano>

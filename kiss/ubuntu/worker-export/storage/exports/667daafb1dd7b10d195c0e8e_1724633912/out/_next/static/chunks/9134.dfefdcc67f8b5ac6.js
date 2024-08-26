@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[9134],{29134:function(u,e,s){s.r(e);var t=s(85893),n=s(67294),r=s(19113);e.default=(0,n.memo)(function(u){var e=u.image;return(0,t.jsx)(r.Eu,{src:(null==e?void 0:e.src)||"",alt:"hotspot"})})}}]);
+//# sourceMappingURL=9134.dfefdcc67f8b5ac6.js.map

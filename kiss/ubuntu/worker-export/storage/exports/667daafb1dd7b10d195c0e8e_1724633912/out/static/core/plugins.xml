@@ -1,0 +1,107 @@
+<krpano>
+  <!--  **********  -->
+  <!--  Include an XML file  -->
+  <!--  id : POST PROCESSING  -->
+  <!--  **********  -->
+  <plugin name="pp_light" devices="html5" keep="true"
+        url="%$mypath%/core/plugins/pp_light.js"
+        enabled="false"
+        exposure="0.0"
+        lights="0.0"
+        shadows="0.0"
+        filterrange="60.0"
+        masking="1.0"
+        quality="7"
+        order=""
+        phase="2"
+        />
+  <plugin name="pp_sharpen" devices="html5" keep="true"
+        url="%$mypath%/core/plugins/pp_sharpen.js"
+        enabled="false"
+        strength="0.0"
+        range="0.0"
+        luminanceonly="true"
+        quality="5"
+        order=""
+        phase="2"
+        />
+  <!--  **********  -->
+  <!--  Include an XML file  -->
+  <!--  id : GYRO  -->
+  <!--  **********  -->
+  <plugin name="gyroscope"
+        keep="true" devices="html5"
+        camroll="false"
+        url="%$mypath%/core/plugins/gyro2.js"
+        onunavailable="checkGyroUnavailable();" sensor_mode="1" friction="auto" autocalibration="true" touch_mode="full" onavailable="delayedcall(1, checkGyroAvailability(););" enabled="false" activated="false"
+        />
+  <events name="gyroscopeEvents" onnewpano="planarGyroscopeTest();" keep="true"/>
+  <action name="planarGyroscopeTest"> if(plugin[gyroscope], if(scene[get(xml.scene)].full360, set(sceneisfull360, false); sub(viewhfov, panoview.hmax, panoview.hmin); if (viewhfov == 360, sub(viewvfov, panoview.vmax, panoview.vmin); if (viewvfov == 180, set(sceneisfull360, true); ); ); if (sceneisfull360, set(plugin[gyroscope].camroll, true); , set(plugin[gyroscope].camroll, false); ); , set(plugin[gyroscope].camroll, false); ); ); </action>
+  <action name="changeGyroscopeState">
+  if(plugin[gyroscope], if (plugin[gyroscope].isavailable, if(%1, ;set(plugin[gyroscope].activated,true); , set(plugin[gyroscope].activated,false); ); if (%1 != plugin[gyroscope].enabled, if(plugin[gyroscope].activated, set(plugin[gyroscope].enabled, true); , set(plugin[gyroscope].enabled, false); ); ); ); ); </action>
+  <action name="checkGyroAvailability"> if(plugin[gyroscope], if (plugin[gyroscope].isavailable, set(sceneisfull360, false); if (scene[get(xml.scene)].full360, sub(viewhfov, panoview.hmax, panoview.hmin); if (viewhfov == 360, sub(viewvfov, panoview.vmax, panoview.vmin); if (viewvfov == 180, set(sceneisfull360, true); ); ); ); set(delaythegyrocheck, false); if (sceneisfull360 AND tour_firstlittleplanet, set(delaythegyrocheck, true)); ifnot(delaythegyrocheck, set(tour_gyroscopedevices, true); events.dispatch(ongyroscopeavailable); , delayedcall(1, checkGyroAvailability();); ); , set(tour_gyroscopedevices, false); );, checkGyroUnavailable(); ); </action>
+  <action name="checkGyroUnavailable"> set(plugin[gyroscope].activated, false); set(plugin[gyroscope].enabled, false); set(tour_gyroscopedevices, false); events.dispatch(ongyroscopeunavailable); </action>
+  <!--  **********  -->
+  <!--  Include an XML file  -->
+  <!--  id : includePlugin  -->
+  <!--  **********  -->
+  <action name="toggleGyroscope"> if (plugin[gyroscope].enabled, changeGyroscopeState(false);,changeGyroscopeState(true););  </action>
+  <!-- <action name="viewControlMoveUp"> if(%1, if(%2, set(isfullvertical, false); ifnot(scene[get(xml.scene)].planar, sub(viewvfov, panoview.vmax, panoview.vmin); if (viewvfov == 180, set(isfullvertical, true); ); ); if(isfullvertical == false AND calc(view.vlookat-%2) LT view.vlookatmin, moveto(get(view.hlookat), get(view.vlookatmin)); , moveto(get(view.hlookat), calc(view.vlookat-%2)); ); , set(vlookat_moveforce, -1); delayedcall(0.1, viewControlMoveVertStop()); ); , set(vlookat_moveforce, -1); ); </action>
+  <action name="viewControlMoveDown"> if(%1, if(%2, set(isfullvertical, false); ifnot(scene[get(xml.scene)].planar, sub(viewvfov, panoview.vmax, panoview.vmin); if (viewvfov == 180, set(isfullvertical, true); ); ); if(sceneisfull360 == false AND calc(view.vlookat+%2) GT view.vlookatmax, moveto(get(view.hlookat), get(view.vlookatmax)); , moveto(get(view.hlookat), calc(view.vlookat+%2)); ); , set(vlookat_moveforce, +1); delayedcall(0.1, viewControlMoveVertStop()); ); , set(vlookat_moveforce, +1); ); </action>
+  <action name="viewControlMoveLeft"> if(%1, if(%2, set(isfullhorizontal, false); ifnot(scene[get(xml.scene)].planar, sub(viewhfov, panoview.hmax, panoview.hmin); if (viewhfov == 360, set(isfullhorizontal, true); ); ); if(isfullhorizontal == false AND calc(view.hlookat-%2) LT view.hlookatmin, moveto(get(view.hlookatmin), get(view.vlookat)); , moveto(calc(view.hlookat-%2), get(view.vlookat)); ); , set(hlookat_moveforce, -1); delayedcall(0.1, viewControlMoveHoriStop()); ); , set(hlookat_moveforce, -1); ); </action>
+  <action name="viewControlMoveRight"> if(%1, if(%2, set(isfullhorizontal, false); ifnot(scene[get(xml.scene)].planar, sub(viewhfov, panoview.hmax, panoview.hmin); if (viewhfov == 360, set(isfullhorizontal, true); ); ); if(isfullhorizontal == false AND calc(view.hlookat+%2) GT view.hlookatmax, moveto(get(view.hlookatmax), get(view.vlookat)); , moveto(calc(view.hlookat+%2), get(view.vlookat)); ); , set(hlookat_moveforce, +1); delayedcall(0.1, viewControlMoveHoriStop()); ); , set(hlookat_moveforce, +1); ); </action>
+  <action name="viewControlMoveHoriStop"> set(hlookat_moveforce, 0); </action>
+  <action name="viewControlMoveVertStop"> set(vlookat_moveforce, 0); </action> -->
+  <!--  **********  -->
+  <!--  Fullscreen Management  -->
+  <!--  **********  -->
+  <action name="fullscreen_onexit">
+    set(fullscreen, false);
+		tween(layer[fullscreen_exitbutton].alpha,0);
+	</action>
+  <layer name="fullscreen_exitbutton" keep="true" vr="true"
+	       style="webvr_button_style"
+	       html="Exit Full Screen"
+	       align="top" y="24"
+	       autoalpha="true" alpha="0.0"
+	       onclick="fullscreen_onexit();"
+	/>
+  <!--  **********  -->
+  <!--  WebVR Button  -->
+  <!--  id : webvrbutton  -->
+  <!--  **********  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!--  WebVR plugin for VR availability tests  -->
+  <!-- <events name="webvrbuttonevents" onvrunavailable="hidewebvrbutton(true);" onTourStart="showwebvrbutton();" hidetourcontrols="hidewebvrbutton();" showtourcontrols="showwebvrbutton();" keep="true"/>
+  <action name="hidewebvrbutton">if(%1 == true,set(layer[webvrbutton].blocked, true););set(layer[webvrbutton].visible, false);</action>
+  <action name="showwebvrbutton">if(tour_displaycontrols,if(layer[webvrbutton].blocked == false,set(layer[webvrbutton].visible, true););,hidewebvrbutton(););</action>
+  <action name="checkVrAvailability"> if(plugin[ptpvrmode], if (plugin[ptpvrmode].isavailable, set(tour_vrdevices, true); events.dispatch(onvravailable); , set(tour_vrdevices, false); ); , checkVrUnavailable(); ); </action>
+  <action name="checkVrUnavailable"> set(tour_vrdevices, false); events.dispatch(onvrunavailable); </action> -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  <!-- <cursors standard="" dragging="" moving=""/>
+  <events name="cursorsEvents" onnewpano="setCursor" oncontrolmodechanged="setCursor" keep="true" devices="desktop"/>
+  <action name="setCursor"> if (tour_controlmodemousetype == moveto, setarrowcursors(); , sethandcursors(); ); </action>
+
+  <action name="setarrowcursors"> set(cursors.standard, all-scroll); set(cursors.dragging, all-scroll); </action>
+  <action name="sethandcursors"> set(cursors.standard, grab); set(cursors.dragging, grab); </action>
+  <contextmenu versioninfo="false"/> -->
+</krpano>

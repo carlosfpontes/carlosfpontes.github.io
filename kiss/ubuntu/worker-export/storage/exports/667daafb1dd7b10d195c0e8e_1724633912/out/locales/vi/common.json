@@ -1,0 +1,21 @@
+{
+  "dialogConfirmSoundTitle": "Tự động phát nhạc?",
+  "btnOK": "OK",
+  "btnCancel": "Huỷ bỏ",
+  "controlbarFirstScene": "Cảnh đầu tiên",
+  "controlbarInfoTour": "Thông tin tour",
+  "controlbarInfoScene": "Thông tin cảnh",
+  "controlbarTurnOnSoundProject": "Bật âm lượng",
+  "controlbarTurnOffSoundProject": "Tắt âm lượng",
+  "controlbarSoundScene": "Âm thanh cảnh",
+  "controlbarStopRotate": "Dừng xoay",
+  "controlbarStartRotate": "Xoay",
+  "controlbarStartAutoPlayScene": "Tự động chuyển cảnh",
+  "controlbarStopAutoPlayScene": "Dừng tự động chuyển cảnh",
+  "controlbarVRMode": "Chế độ VR",
+  "controlbarFullscreen": "Toàn màn hình",
+  "controlbarViewNormal": "View Normal",
+  "controlbarViewPlanet": "View Little Planet",
+  "controlbarViewMirrorBall": "View Mirror Ball",
+  "controlbarSettingColor": "Thay đổi màu"
+}

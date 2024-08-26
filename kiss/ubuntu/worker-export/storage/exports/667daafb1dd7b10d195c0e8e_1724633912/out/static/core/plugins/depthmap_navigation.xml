@@ -1,0 +1,545 @@
+<krpano>
+  <!--
+		depthmap_navigation.xml
+		krpano 1.21
+
+		https://krpano.com/plugins/xmlextensions/#depthmap_navigation
+
+		Depthmap Navigation Controls
+		- Arrow-keys or WASD-keys or Middle/Right-Mousebutton Navigation on Desktop
+		- On-Screen-Touchpad for Mobile Devices
+		- VR-Controller Joystick/Touchpad support for WebVR
+		- Optional Depthmap/3D-Model Hit/Collision-Detection
+
+		Keyboard Keys:
+		- Arrow/WASD for forward/backward/left/right moving
+		- holding SHIFT for faster movement
+		- Q for moving up
+		- Y or Z for moving down
+		- F for toggling between walking and flying
+		- C for toggling collision / groundcollision on/off
+
+		Mouse:
+		- Left-Mousebutton: normal looking around / rotating
+		- Left+SHIFT or Middle- and Right-Mousebutton: moving around
+		- Holding the ALT, CTRL or SHIFT-key: moving up and down
+		- In Dollhouse-mode the moving around/up-down controls are swapped
+
+		Settings:
+		- movemode = "walking" or "flying"
+		- touchmode = "shift" or "move" - the onscreen-touchpad movement mode
+		- speed = movement speed
+		- friction = movement friction
+		- collision = collision-detection / stop on walls
+		- groundcollision = collision-detection with the ground, enables gravity
+		- usevrfloorlevel = use the real physical height in VR
+		- eyelevel - the distance in cm between the ground/floor and the eyes/camera
+		- collisionlevel - the height in cm where the collision checking should be done
+		- smoothlevelchanges - a factor for smoothing level/height changes
+		- stopdistance = keep this distance in cm to walls/surfaces
+		- moveback = when hitting a wall, move back x times
+		- bounceback = when hitting a wall, add a bounce movement
+	-->
+  <depthmap_navigation
+			movemode="walking"
+			touchmode="shift"
+			speed.number="0.5"
+			friction.number="0.9"
+			collision.bool="true"
+			groundcollision.bool="false"
+			usevrfloorlevel.bool="false"
+			eyelevel.number="160.0"
+			collisionlevel.number="100.0"
+			smoothlevelchanges.number="0.15"
+			stopdistance.number="30.0"
+			moveback.number="1.2"
+			bounceback.number="1.6"
+			/>
+  <!-- remove the default keyboard controls -->
+  <control keycodesleft="" keycodesright="" keycodesup="" keycodesdown="" />
+  <!-- keyboard keycodes -->
+  <keyb up="38" down="40" left="37" right="39" w="87" a="65" s="83" d="68" shift="16" ctrl="17" space="32" pageup="33" pagedown="34" />
+  <!-- state variables for walking/flying -->
+  <walkaround forward.int="0" backward.int="0" left.int="0" right.int="0" up.int="0" down.int="0" faster.int="0" jump.int="0" relativespeed.bool="false" />
+  <!-- keyboard event handling -->
+  <events name="depthmap_navigation" keep="true"
+		onkeydown="depthmap_handlekey(1);"
+		onkeyup="depthmap_handlekey(0);"
+		/>
+  <action name="depthmap_handlekey" args="keypressed" scope="local">
+		if( keycode == keyb.up    OR keycode == keyb.w, copy(walkaround.forward,  keypressed);
+		  , keycode == keyb.down  OR keycode == keyb.s, copy(walkaround.backward, keypressed);
+		  , keycode == keyb.left  OR keycode == keyb.a, copy(walkaround.left,     keypressed);
+		  , keycode == keyb.right OR keycode == keyb.d, copy(walkaround.right,    keypressed);
+		  , keycode == keyb.shift,                      copy(walkaround.faster,   keypressed);
+		  , keycode == keyb.space,                      copy(walkaround.jump,     keypressed);
+		  , keycode == charcode('F') AND keypressed == 0,         switch(depthmap_navigation.movemode, 'walking', 'flying'); depthmap_showinfo(('Mode: ' + capitalize(depthmap_navigation.movemode)));
+		  , keycode == charcode('C') AND keypressed == 0,         switch(depthmap_navigation.collision); depthmap_showinfo(('Collision: ' + (depthmap_navigation.collision ? 'On' : 'Off')));
+		  , keycode == charcode('Q'),                             copy(walkaround.up,       keypressed);
+		  , keycode == charcode('Y') OR keycode == charcode('Z'), copy(walkaround.down,     keypressed);
+		);
+	</action>
+  <!-- walking/flying controls -->
+  <action name="depthmap_walkaroundmovement" autorun="onstart" type="Javascript">
+    <![CDATA[
+
+		function CLAMP(v,vmin,vmax){ return v < vmin ? vmin : v > vmax ? vmax : v; };
+
+		var mouse = krpano.mouse;
+		var view = krpano.view;
+		var dir = view.dir;
+		var settings = krpano.depthmap_navigation
+		var walkaround = krpano.walkaround;
+
+		var vx=0, vy=0, vz=0;
+		var rx=0;
+		var touchpad_last_axis = [[0,0],[0,0]];
+		var touchpad_move_speed = 5.0;
+		var touchpad_rotate_speed = 1.5;
+		var joystick_move_speed = 1.0;
+		var joystick_rotate_speed = 1.0;
+		var jumping = false;
+		var lasttick = krpano.timertick;
+
+
+		krpano.actions.renderloop( function()
+		{
+			var tick = krpano.timertick;
+			var dt = tick - lasttick;
+			lasttick = tick;
+
+			var webvr = krpano.webvr;
+			var friction = settings.friction;
+			var acceleration = 1.0;
+			var inertia = 1.0;
+			var smoothlevelchanges = settings.smoothlevelchanges;
+			var ty_raycast_offset = 0.0;
+
+			var do_ground_collision = (settings.collision && settings.groundcollision && settings.movemode == "walking" && view.oz < 200);
+
+			if (do_ground_collision)
+			{
+				ty_raycast_offset = settings.eyelevel - settings.collisionlevel;
+			}
+
+			// adjust the friction and acceleration depending on the framerate (an experimental API)
+			if (krpano.display.getAdaptiveFrictions)
+			{
+				var adjustedmovment = krpano.display.getAdaptiveFrictions(friction, acceleration/friction, inertia, "fast");
+				friction = adjustedmovment.friction;
+				acceleration = adjustedmovment.accel * friction;
+				inertia = adjustedmovment.inertia;
+			}
+
+			vx *= friction;
+			vy *= friction;
+			vz *= friction;
+			rx *= friction;
+
+			if (vx*vx + vy*vy + vz*vz < 0.001)
+				vx = vy = vz = 0;
+
+			if (rx*rx < 0.01)
+				rx = 0;
+
+			var h = view.hlookat * Math.PI / 180.0;
+			var v = view.vlookat * Math.PI / 180.0;
+
+			// 2D direction vector (walking)
+			var lx2 = Math.sin(h);
+			var lz2 = Math.cos(h);
+
+			// 3D direction vector (flying)
+			var lx3 = dir.x;
+			var ly3 = dir.y;
+			var lz3 = dir.z;
+
+			var wx = walkaround.right - walkaround.left;
+			var wz = walkaround.forward - walkaround.backward;
+			var wy = walkaround.up - walkaround.down;
+
+			// handle the touchpad or joystick input from the vr-controllers
+			var vrcontroller = (webvr && webvr.enabled) ? webvr.vrcontroller : null;
+			if (vrcontroller)
+			{
+				var vrcontroller_count = vrcontroller.length;
+				for (var i=0; i < vrcontroller_count; i++)
+				{
+					var controller = vrcontroller[i];
+					var axes = controller.axes;
+
+					if (axes)
+					{
+						// when having a depthmap: move around (1), otherwise only rotate the pano (0)
+						var controlmode = (krpano.display.havedepthmap || krpano.display.depthbuffer) ? 1 : 0;
+
+						// when having two controllers use the touchpad/joystick from the right one only for rotating
+						if (vrcontroller_count == 2 && controller.hand == "right")
+							controlmode = 0;
+
+						// joystick or touchpad?
+						var y_axis_scale = +1.3;
+						var is_touchpad = false;
+
+						if (controller.id == "Daydream Controller" || controller.id == "Oculus Go Controller")
+						{
+							is_touchpad = true;
+						}
+						else if(controller.id == "OpenVR Gamepad")	// HTC Vive Controller
+						{
+							is_touchpad = true;
+							y_axis_scale *= -1.0;
+						}
+
+						if (webvr.iswebxr)
+						{
+							// WebXR: axes[0,1] = touchpad, axes[2,3] = thumbstick
+							if ( axes[0] != 0 || axes[1] != 0 )
+							{
+								is_touchpad = true;
+							}
+							else
+							{
+								// thumbstick - map axes for further processing
+								axes = [axes[2],axes[3]];
+							}
+						}
+
+						if (do_ground_collision)
+						{
+							var buttons = controller.buttons;
+
+							// use buttons on the VR controllers for running and jumping
+							if (controller.hand == "left")
+							{
+								walkaround.faster = buttons[0] && buttons[0].pressed ? +1 : 0;
+							}
+							else if (controller.hand == "right")
+							{
+								walkaround.jump = buttons[4] && buttons[4].pressed ? +1 : 0;
+							}
+						}
+
+						if (is_touchpad)
+						{
+							//  special touchpad control (swiping like)
+
+							if (axes[0] != 0 && axes[1] != 0)
+							{
+								var dx = +(axes[0] - touchpad_last_axis[i][0]);
+								var dz = -(axes[1] - touchpad_last_axis[i][1]) * y_axis_scale;
+								touchpad_last_axis[i][0] = axes[0];
+								touchpad_last_axis[i][1] = axes[1];
+
+								if (Math.abs(dx) > 0.3) dx = 0;		// too fast changes are probably no swipes
+								if (Math.abs(dz) > 0.3) dz = 0;
+
+								if (controlmode == 0)	// rotate
+								{
+									rx += touchpad_rotate_speed * dx * acceleration;
+								}
+								else	// move
+								{
+									vx += touchpad_move_speed * ( dx*lz2 + dz*lx2) * acceleration;
+									vz += touchpad_move_speed * (-dx*lx2 + dz*lz2) * acceleration;
+								}
+							}
+						}
+						else
+						{
+							// joystick - direct control
+
+							if (controlmode == 0)	// rotate
+							{
+								if (Math.abs(axes[0]) > 0.2)
+								{
+									rx = joystick_rotate_speed * axes[0] * acceleration;
+								}
+							}
+							else	// move
+							{
+							 	// ignore too small values, some vr-controllers, e.g. Windows MR ones, are constantly reporting small wrong values
+								if ( Math.abs(axes[0]) > 0.2 ) wx += joystick_move_speed * axes[0] * acceleration;
+								if ( Math.abs(axes[1]) > 0.2 ) wz -= joystick_move_speed * axes[1] * acceleration;
+							}
+						}
+					}
+				}
+			}
+
+			var wl = Math.sqrt(wx*wx + wz*wz);
+			if (wl > 0)
+			{
+				if (walkaround.relativespeed)
+				{
+					wl *= acceleration * settings.speed;
+				}
+				else
+				{
+					// normalize the moving speed
+					wl = acceleration * settings.speed / wl;
+				}
+
+				if (walkaround.faster > 0)
+					wl *= 3.0;
+
+				wx *= wl;
+				wz *= wl;
+				if (wx)
+				{
+					vx += wx*lz2;
+					vz -= wx*lx2;
+				}
+				if (wz)
+				{
+					if (settings.movemode == "flying")
+					{
+						vx += wz*lx3;
+						vz += wz*lz3;
+						vy += wz*ly3;
+					}
+					else
+					{
+						vx += wz*lx2;
+						vz += wz*lz2;
+					}
+				}
+			}
+
+			if (do_ground_collision == false)
+			{
+				// move up or down
+				vy -= 0.5 * acceleration * settings.speed * wy;
+			}
+
+			if ((mouse.leftbutton && mouse.shiftkey) || mouse.middlebutton || mouse.rightbutton)
+			{
+				var is_dollhouse_view = (view.oz > 100);
+				var extrakey = mouse.ctrlkey | mouse.altkey;
+
+				var dragspeed = (is_dollhouse_view ? 0.1 : 0.05) * acceleration;
+				var dx = -dragspeed * mouse.dx;
+				var dy = (extrakey ^ is_dollhouse_view) ? +dragspeed * mouse.dy : 0;
+				var dz = (extrakey ^ is_dollhouse_view) ? 0 : +dragspeed * mouse.dy;
+
+				vx += dx*dir.rx + dy*dir.ux + dz*dir.x;
+				vy += dx*dir.ry + dy*dir.uy + dz*dir.y * (settings.movemode == "flying");
+				vz += dx*dir.rz + dy*dir.uz + dz*dir.z;
+			}
+
+			var vspeed = Math.sqrt(vx*vx + vy*vy + vz*vz);
+
+			if (vspeed > 0)
+			{
+				// simple collision testing
+				if (settings.collision && view.oz < 200)		// do collision testing only in non-dollhouse-view
+				{
+					var hit = krpano.actions.raycastdepth(view.tx, view.ty + ty_raycast_offset, view.tz, vx, vy, vz);
+					if (hit)
+					{
+						if (hit.d > 0 && hit.d < settings.stopdistance)
+						{
+							// slide along walls
+							var vlen = Math.sqrt(vx*vx + vy*vy + vz*vz);
+							if (vlen > 0)
+							{
+								var pushback = -(settings.stopdistance - hit.d) / vlen * settings.moveback;
+
+								view.tx += pushback * vx;
+								view.ty += pushback * vy;
+								view.tz += pushback * vz;
+
+								var hitscale = (vx*hit.nx + vy*hit.ny + vz*hit.nz) * settings.bounceback;
+
+								vx -= hit.nx * hitscale;
+								vy -= hit.ny * hitscale;
+								vz -= hit.nz * hitscale;
+							}
+						}
+					}
+
+
+				}
+
+				view.tx += vx;
+				view.ty += vy;
+				view.tz += vz;
+			}
+
+			var groundlevel = 0;
+
+			if (do_ground_collision)
+			{
+				var floorlevel = settings.eyelevel;
+				var jump_pressed = walkaround.jump || (wy > 0);
+				var crouch_pressed = (wy < 0);
+
+				if (crouch_pressed)
+				{
+					floorlevel *= 0.6;
+				}
+
+				if (webvr && webvr.enabled && settings.usevrfloorlevel && webvr.floorlevel > 0.0)
+				{
+					// take the real phyiscal floor level
+					floorlevel = settings.eyelevel = webvr.floorlevel;
+				}
+
+				var floorhit = krpano.actions.raycastdepth(view.tx, view.ty, view.tz, 0, +1.0, 0);
+
+				if (floorhit && floorhit.d > 0)
+				{
+					groundlevel = floorhit.y;
+
+
+
+					var foot_floor_distance = floorhit.d - floorlevel;
+
+					if (Math.abs(foot_floor_distance) < 1.0)
+					{
+						// on the floor, even out small differences
+						view.ty += foot_floor_distance;
+						jumping = false;
+						vy = 0;
+					}
+					else if (foot_floor_distance <= 30.0)	// 30.0 = smooth also walking stairs down
+					{
+						if (jumping == false || vy > 0)
+						{
+							// below the floor => push up (but smoothed for nicer stairwalks)
+							view.ty += foot_floor_distance * smoothlevelchanges;
+						}
+
+						if (foot_floor_distance <= 1.0)
+						{
+							jumping = false;
+							vy = 0;
+						}
+					}
+					else if (foot_floor_distance > 1.0)
+					{
+						var gravity = 4.0;
+
+						// in the air => apply gravity
+						if (vy < 0.0 && jump_pressed)
+						{
+							gravity = 1.5;	// use a lower graviy as long as holding the jump key
+							jumping = true;
+						}
+
+						vy += gravity * acceleration;
+					}
+
+					if (vy == 0 && jump_pressed)
+					{
+						var jump_inertia = 30.0;
+
+						vy -= jump_inertia / inertia;
+
+						jumping = true;
+					}
+				}
+				else
+				{
+					// no floor? maybe below the floor?
+
+					// trace a ray upward
+					var backup_cull = krpano.image.depthmap.cull;
+					krpano.image.depthmap.cull = "twosided";	// use the front- and back-face for hit-testing in this case
+					floorhit = krpano.actions.raycastdepth(view.tx, view.ty, view.tz, 0, -1.0, 0);
+					krpano.image.depthmap.cull = backup_cull;
+
+					if (floorhit && floorhit.d > 0)
+					{
+						// shift up
+						view.ty = floorhit.y - floorlevel;
+					}
+				}
+			}
+
+			if (rx != 0 && webvr)
+			{
+				webvr.hlookatoffset += rx;
+			}
+		});
+	]]>
+  </action>
+  <!-- some buttons -->
+  <style name="depthmap_button" type="text" css="text-align:center;" padding="4 8" bgborder="0 0xFFFFFF 1" bgroundedge="1" bgshadow="0 1 4 0x000000 1.0" ondown="set(bgcolor, 0xDDDDDD);" onup="set(bgcolor, 0xFFFFFF);" />
+  <style name="depthmap_info" type="text" css="color:#FFFFFF;text-align:center;" bgalpha="0.0" txtshadow="0 1 4 0x000000 1.0" enabled="false" />
+  <layer name="moveup" keep="true" style="depthmap_button" alpha="0.0" html="▲" align="rightbottom" x="20" y="50" ondown="set(walkaround.up,1);"   onup="set(walkaround.up,0);" />
+  <layer name="movedn" keep="true" style="depthmap_button" alpha="0.0" html="▼" align="rightbottom" x="20" y="20" ondown="set(walkaround.down,1);" onup="set(walkaround.down,0);" />
+  <!-- info texts -->
+  <layer name="depthmap_walkinfo" keep="true" style="depthmap_info" align="center" y="+45%" html="Walk around using the[br]Keyboard Arrow- or W,A,S,D-keys" devices="desktop" alpha="0.0" />
+  <!-- info texts -->
+  <layer name="depthmap_info" keep="true" style="depthmap_info" align="center" y="+15%" html=""
+		onloaded="delayedcall(depthmap_info, 3.0, tween(layer[depthmap_info].alpha,0.0,0.5); );"
+		devices="desktop"
+		/>
+  <action name="depthmap_showinfo" scope="local" args="info, time">
+		tween(layer[depthmap_info].alpha,1.0,0.1);
+		layer[depthmap_info].text = info;
+		delayedcall(depthmap_info, 3.0, tween(layer[depthmap_info].alpha,0.0,0.5); );
+	</action>
+  <!-- drag area for touch devices -->
+  <!-- <layer name="walkinfo_touch" keep="true" type="text" align="bottom"
+		y="85"
+		html="Hold down here[br]and drag around[br]for walking" bgalpha="0.3" devices="handheld"
+		css="color:#FFFFFF;text-align:center;" txtshadow="0 1 4 0x000000 1.0"
+		vcenter="true"
+		width="140" height="140" bgroundedge="180" bgblur="2"
+		ondown="dragcontrol();"
+		/>
+  <events name="walkinfo_touch" keep="true" devices="mobile"
+		onresize="if(get(is_dollhouse_view),
+                if(stagewidth GT stageheight,
+					        set(layer[walkinfo_touch], align=rightbottom, x=80, y=40);,
+					        set(layer[walkinfo_touch], align=bottom, x=0, y=85);
+				        );
+              );"
+		/> -->
+  <action name="dragcontrol" scope="local" type="Javascript">
+    <![CDATA[
+		krpano.actions.tween(caller.path+".alpha",0.0);
+		krpano.actions.asyncloop( function()
+		{
+			if (caller.pressed)
+			{
+				if(krpano.depthmap_navigation.touchmode == 'move')
+				{
+					krpano.walkaround.relativespeed = true;
+					var dx = (krpano.mouse.x - krpano.mouse.downx);
+					var dy = (krpano.mouse.y - krpano.mouse.downy);
+					var dl = Math.sqrt(dx*dx + dy*dy);
+					if (dl > 0)
+					{
+						dx /= dl;
+						dy /= dl;
+						dl = Math.min(dl,120) / 70;
+						dl = dl < 1.0 ? Math.pow(dl, 0.5) : Math.pow(dl, 1.1);
+					}
+
+					krpano.walkaround.forward = -dy * dl;
+					krpano.walkaround.left    = -dx * dl;
+				}
+				else
+				{
+					krpano.walkaround.relativespeed = false;
+					krpano.walkaround.forward = krpano.mouse.dy * -0.25;
+					krpano.walkaround.left    = krpano.mouse.dx * -0.25;
+				}
+
+				return true;	// keep looping
+			}
+			else
+			{
+				krpano.walkaround.left = 0;
+				krpano.walkaround.forward = 0;
+				krpano.actions.tween(caller.path+".alpha",1);
+
+				return false;	// stop the loop
+			}
+		});
+	]]>
+  </action>
+</krpano>

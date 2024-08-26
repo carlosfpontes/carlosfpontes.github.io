@@ -1,0 +1,141 @@
+﻿<krpano>
+  <include url="%$mypath%/core/plugins/snapshot/snapshot.xml" />
+  <include url="%$mypath%/core/plugins/webvr.xml" />
+  <include url="%$mypath%/core/plugins/follow_mouse.xml" />
+  <include url="%$mypath%/core/plugins/polygon.xml" />
+  <include url="%$mypath%/core/transition.xml" />
+  <include url="%$mypath%/core/plugins.xml" />
+  <include url="%$mypath%/core/plugins/iphone_fullscreen_swipe.xml" devices="ios" />
+  <include url="%$mypath%/core/plugins/garrows/garrows.xml" />
+  <include url="%$mypath%/core/plugins/garrows/garrows_settings.xml" />
+  <include url="%$mypath%/core/xml.xml" />
+  <include url="%$mypath%/core/skin/vtourskin.xml" />
+  <!-- <include url="%$mypath%/core/plugins/vrmenu/vrmenu.xml"/> -->
+  <include url="%$mypath%/core/plugins/depthmap_navigation.xml" />
+  <!-- <include url="%$mypath%/core/plugins/depthmap_measure3d.xml" /> -->
+  <display autofullscreen="false" />
+  <depthmap_navigation collision="true" />
+  <plugin name="soundinterface" preload="true" keep="true"
+	        url.flash="%$mypath%/core/plugins/soundinterface.swf"
+	        url.html5="%$mypath%/core/plugins/soundinterface.js"
+	        rootpath=""
+          mute="false"
+          panningmodel="simple"
+          worldscale="1.0"
+          autopause="false"
+          autounlock="false"
+	        />
+  <action name="sound1click">
+    trace("name:", %1, " src:", %2, " action:",  %3, " volume:",   %4," reach:",  %5, " auto_play:", %6, " loop:",  %7);
+    if(sound[%1], if(%3 == "pause", sound[%1].toggle();, sound[%1].seek(0);), playsound_at_hotspot(%1, %2, %1, %7, %4, %5););
+  </action>
+  <action name="destroy_sound">
+    trace("destroy_sound");
+    stopallsounds();
+  </action>
+  <action name="toggle_mute_sound">
+    trace("name:", %1, "mute:", %2);
+    if(sound[%1], mutesound(%1, %2));
+  </action>
+  <action name="remove_sound">
+    trace("name:", %1);
+    if(sound[%1], sound[%1].destroy();)
+  </action>
+  <!-- <vrmenu
+    angle="-45" groups="false" onlycat="false" firstgroup="false" onlygroups="false" displayprevnext="true" width="240" height="120" gpwidth="400" gpheight="200" rows="6" group_rows="6" spacing="20" gpspacing="50" timeout="2000" seen="true" from="800" closevrmenu="true" fademenu="true" menualpha="50" add_txt_thumb="true" txt_thumb_css="color:#ffffff; font-size:26px;text-align:center;fontweight: bold;" txt_thumb_vcenter="true" txt_thumb_hasshadow="true" add_txt_group="true" txt_group_css="color:#ffffff;font-size:36px;text-align:center;fontweight: bold;" txt_group_vcenter="true" txt_group_hasshadow="true" add_thumb_border="true" thumb_border_border="0 0x000000 1.00" thumb_border_bgcolor="0x000000" thumb_border_bgalpha="0" thumb_border_over_border="2 0xffffff 1.00" thumb_border_over_bgcolor="0x000000" thumb_border_over_bgalpha="0.7000076295109483"
+  /> -->
+  <action name="hide_selected_scene_from_menu_vr">
+    for(set(i, 0), i LT scene.count, inc(i),
+      set(isSceneVR, calc(contains(get(scene[get(i)].name) , 'scene_')));
+      set(isSceneSelected, calc(contains(get(scene[get(i)].name) , %1)));
+      if(isSceneVR,
+        if(isSceneSelected, set(scene[get(i)].nogrid, true), set(scene[get(i)].nogrid, null));
+      )
+    )
+  </action>
+  <action name="load_menu_vr">
+    includexmlstring(%1);
+  </action>
+  <action name="dollhouse_view_action">
+    fov = view.fov;
+    hlookat = view.hlookat;
+    vlookat = view.vlookat;
+    hlookatmin = view.hlookatmin;
+    hlookatmax = view.hlookatmax;
+    vlookatmin = view.vlookatmin;
+    vlookatmax = view.vlookatmax;
+    fovmin = view.fovmin;
+    fovmax = view.fovmax;
+    lookto(270,50,90,default,true,true);
+    set(view.hlookatmin, -180);
+    set(view.hlookatmax, 180);
+    set(view.vlookatmin, -90);
+    set(view.vlookatmax, 90);
+    set(view.fovmin, 1);
+    set(view.fovmax, 179);
+    set(control.invert,true);
+    tween(view.oz|view.tx|view.ty|view.tz,calc(''+1200+'|'+image.ox+'|'+image.oy+'|'+image.oz), 0.05);
+    hideHTML();
+    hide_all_hotspots();
+    is_dollhouse_view = true;
+    tween(layer[depthmap_walkinfo].alpha, 1.0, 0.05);
+    if(dollhouse_bg_color, tween(bgcolor, get(dollhouse_bg_color)));
+    is_hide_x = %1;
+    if(get(is_hide_x) == false,
+    <!-- layer[webvr_exitbutton].html = "Exit View";
+      tween(layer[webvr_exitbutton].alpha, 1.0, 0.25); -->
+      addlayer('popup_close_x', closex);
+      set(closex,
+          url='%$mypath%/core/skin/close.png',
+          align=righttop,
+          x=12,
+          y=12,
+          scale=0.2,
+          zorder=99,
+          alpha=0.5,
+          onover='tween(alpha,1)',
+          onout='tween(alpha,0.5)',
+          ondown='tween(alpha,1)',
+          onup='tween(alpha,0.5)',
+          onclick='reset_view()'
+      );
+    )
+    <!-- tween(layer[moveup].alpha, 1.0, 0.25);
+    tween(layer[movedn].alpha, 1.0, 0.25); -->
+  </action>
+  <action name="reset_view_action">
+    events.dispatch("reset_view_action");
+    showHTML();
+    show_all_hotspots();
+    set(control.invert,false);
+		tween(view.tx|view.ty|view.tz|view.ox|view.oy|view.oz|view.fisheye,
+			calc(''+image.ox+'|'+image.oy+'|'+image.oz+'|0|0|0|0'),
+			0.5,
+			default
+		);
+    set(view.hlookatmax, get(hlookatmax));
+    set(view.hlookatmin, get(hlookatmin));
+    set(view.vlookatmin, get(vlookatmin));
+    set(view.vlookatmax, get(vlookatmax));
+    set(view.fovmin, get(fovmin));
+    set(view.fovmax, get(fovmax));
+    <!-- lookto(get(hlookat),get(vlookat),get(fov),default,true,true); -->
+    is_dollhouse_view = false;
+    <!-- layer[webvr_exitbutton].html = "Exit VR";
+    tween(layer[webvr_exitbutton].alpha, 0, 0.25); -->
+    tween(layer[depthmap_walkinfo].alpha, 0.0, 0.25);
+    tween(bgcolor, 0x000000);
+    removelayer('popup_close_x');
+    <!-- tween(layer[moveup].alpha, 0, 0.25);
+    tween(layer[movedn].alpha, 0, 0.25); -->
+    cm_normal_view();
+  </action>
+  <action name="dollhouse_view">
+    loadscene(dollhouse, null, MERGE, BLEND(0.1));
+    dollhouse_view_action(%1);
+  </action>
+  <action name="reset_view">
+    loadscene(scene_00, null, MERGE, BLEND(0.1));
+    reset_view_action();
+  </action>
+</krpano>

@@ -1,0 +1,21 @@
+{
+  "dialogConfirmSoundTitle": "Auto play sound on this website?",
+  "btnOK": "OK",
+  "btnCancel": "Cancel",
+  "controlbarFirstScene": "Go to first scene",
+  "controlbarInfoTour": "Info Tour",
+  "controlbarInfoScene": "Info Scene",
+  "controlbarTurnOnSoundProject": "Unmute sound",
+  "controlbarTurnOffSoundProject": "Mute sound",
+  "controlbarSoundScene": "Sound scene",
+  "controlbarStopRotate": "Stop Rotate",
+  "controlbarStartRotate": "Rotate",
+  "controlbarStartAutoPlayScene": "Auto play scene",
+  "controlbarStopAutoPlayScene": "Stop auto play scene",
+  "controlbarVRMode": "VR Mode",
+  "controlbarFullscreen": "Fullscreen",
+  "controlbarViewNormal": "View Normal",
+  "controlbarViewPlanet": "View Little Planet",
+  "controlbarViewMirrorBall": "View Mirror Ball",
+  "controlbarSettingColor": "Change color"
+}

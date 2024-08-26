@@ -1,0 +1,224 @@
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<krpano>
+  <style name="picuture" scale="0.05" enabled="false" distorted="true" alpha="1" maskchildren="true" />
+  <style name="vr_menu_style" width="32" height="32" alpha="0.75" enabled="true" visible="true" />
+  <action name="hide_all_hotspots">
+    removechevrons();
+    removefloatingarrow();
+    removenavpoints();
+    for(set(i, 0), i LT hotspot.count, inc(i),
+      isHotspot = (contains(get(hotspot[get(i)].name) , "krpanoviewsnapshot"));
+      isVRMenu = (contains(get(hotspot[get(i)].name) , "vr_menu"));
+      if(isHotspot OR isVRMenu,
+        set(hotspot[get(i)].old_visible, get(hotspot[get(i)].visible));
+        set(hotspot[get(i)].visible, false);
+      );
+    );
+	</action>
+  <action name="show_all_hotspots">
+    showchevrons();
+    showfloatingarrow();
+    shownavpoints();
+    for(set(i, 0), i LT hotspot.count, inc(i),
+      isHotspot = (contains(get(hotspot[get(i)].name) , "krpanoviewsnapshot"));
+      isVRMenu = (contains(get(hotspot[get(i)].name) , "vr_menu"));
+      if(isHotspot OR isVRMenu,
+        set(hotspot[get(i)].visible, get(hotspot[get(i)].old_visible));
+      );
+    );
+	</action>
+  <action name="hide_media_hotspot">
+		removehotspot('hotspot_media_content');
+		removehotspot('hotspot_media_nav_left');
+		removehotspot('hotspot_media_nav_close');
+		removehotspot('hotspot_media_nav_right');
+		set('hotspot["hotspot_media_overlay"].visible', false);
+    showchevrons();
+    showfloatingarrow();
+    shownavpoints();
+	</action>
+  <action name="add_overlay"  type="Javascript">
+    <![CDATA[
+		const overlay = krpano.get(`hotspot["hotspot_media_overlay"]`);
+    overlay.visible = true;
+	]]>
+  </action>
+  <action name="close_picture" type="Javascript">
+    <![CDATA[
+		const length = args.length;
+		krpano.call('hide_media_hotspot()');
+		krpano.call('hide_hotspots_no_vr()');
+	]]>
+  </action>
+  <action name="change_picture" type="Javascript">
+    <![CDATA[
+		var mode = args[1];
+		var picName = args[2];
+
+		const arr = krpano.get(picName+'picrure_array');
+		let number = krpano.get(picName + 'number');
+		const picture = krpano.get(`hotspot["${picName}"]`);
+
+		if (mode === 'right') {
+			number++;
+			if(number === arr.length) {
+				number = 0;
+			}
+			krpano.set(picName + 'number' , number);
+		};
+		if (mode === 'left') {
+			number--;
+			if(number === -1) {
+				number = arr.length-1
+			}
+			krpano.set(picName + 'number' , number);
+		};
+		picture.url = arr[number];
+	]]>
+  </action>
+  <action name="open_galleries" type="Javascript">
+    <![CDATA[
+    krpano.call('hide_all_hotspots()');
+    krpano.call(`add_overlay()`);
+
+    var name = args[1];
+    <!-- const hs = krpano.get(`hotspot["${name}"]`); -->
+    const hs = {ath: krpano.get('view.hlookat'), atv: krpano.get('view.vlookat')};
+
+
+    const picture = krpano.addhotspot("hotspot_media_content", "webgl");
+    picture.ath = hs.ath;
+    picture.atv = hs.atv - 15;
+		picture.depth = 100;
+    picture.depthbuffer = "true";
+		picture.loadstyle('picuture');
+		picture.zorder = 4;
+
+		krpano.set(picture.name+'picrure_array', args[2].split(','));
+		krpano.set(picture.name + 'number' , 0);
+
+		const arr = krpano.get(picture.name + 'picrure_array');
+
+
+
+
+
+		const left = krpano.addhotspot('hotspot_media_nav_left','webgl');
+		const right = krpano.addhotspot('hotspot_media_nav_right','webgl');
+		const close = krpano.addhotspot('hotspot_media_nav_close','webgl');
+
+    left.loadstyle('vr_menu_style');
+    right.loadstyle('vr_menu_style');
+    close.loadstyle('vr_menu_style');
+
+
+
+
+		left.ath = hs.ath - 15;
+		left.atv = hs.atv + 15.5;
+		left.width = 32;
+		left.height = 32;
+		left.imagewidth = 24;
+		left.imageheight = 24;
+    left.enabled = true;
+    left.edge="center";
+		left.depth="1000";
+		left.distorted="true";
+    left.scale="0.5";
+		left.flying="0.1";
+    left.onover = `tween(scale,0.75,easeOutExpo,0.2);`;
+		left.onout = `tween(scale,0.5,easeOutExpo,0.2);`;
+		left.url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAA+CAYAAAClZHIhAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAY1JREFUeNrE2TtOAzEUBdBMICjUrImGHaRAqZAiZQ2hYBd8CqpUScWW2AOCfIZrNCMZaz7+vHffSLewxyMdeZyMn1zVdT0xuK6RO2TvGlMDwAx5RnbIk+u4NAC8IvdNe8OeiRaw9PqOyOfErQlCZsh7/f/6QZZ/a9IawECMArQRUQBNRDRAC5EE0EAkA6QRWQBJRDZAClEEkEAUA0oRIoAShBggFyEKyEGIA1IRKoAUhBogFqEKiEGoA8YQFMAQggboQ1ABXQg6IESYAHyEGaBFXHUAvlmAFrENAF/IggVwcbXoIagZq6Zu5F2QXCAvwWwckQfm63CZdkBOLIjfMIOEHSaQrk46pO8GFTJ0kwYZG0CBxAxSh8QOVIWkDFaDpD6gAsl5SBySqxeFlLxLMUjpyhaBSPzOiyFS/3pFEMlvQDZE+ouYBdHYHyRDtHZLSRDNvWM0RHsnHQVh1BWjEFapNwih1Zs9kDOyZp6LnpFVczbq1703zJnwZ+StmYlH11cZHdjPkVvkwzV+BRgAuVdRVQcQuJwAAAAASUVORK5CYII=";
+		left.zorder = 4;
+		left.onclick = `change_picture('left','${picture.name}')`;
+
+
+		right.ath = hs.ath + 15;
+		right.atv = hs.atv + 15.5;
+		right.width = 32;
+		right.height = 32;
+		right.imagewidth = 24;
+		right.imageheight = 24;
+    right.enabled = true;
+    right.edge="center";
+		right.depth="1000";
+		right.distorted="true";
+    right.scale="0.5";
+		right.flying="0.1";
+    right.onover = `tween(scale,0.75,easeOutExpo,0.2);`;
+		right.onout = `tween(scale,0.5,easeOutExpo,0.2);`;
+		right.url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAA+CAYAAAClZHIhAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYtJREFUeNrE2cuKwjAUBuC24jB7n8uVK1euhIF5Bxe+hRfEnZtZz8bXmXeYm1r/Qgox1DaXc/4EfsQ0hY/TapOmrOu6MG2GfCLfBblV5nONfCAbZMxGFKjEun5sR2TcVIiVphJfyMVyLZAdtSJGs0D+clXE/pIN4nZkgXR10iHPDlAhfQdpkKEBFIjPIHWI70BVSMhgNUjoCSqQmJPEIbF6UUjKtRSDpN7ZIhCJ33kyROpfLwki+QyIhkg/EaMgGvODYIjWbCkIojl39IZoz6S9IIzFzSCEtcrqhdCWegby2wF5Ka1VOaPNkQPyavWdKvL6u1nflk7fP/NyLJGLczm2yIgJuHYAKtaN2QtgIAYB2ggvgCbCG6CFCAJoIIIB0ogogCQiGiCFSAJIIJIBqQgRQApCDBCLEAXEIMQBoQgVQAhCDeCLUAX4INQBQwgKoA9BAzxDUAFdCDrARWQB2IhsgBbxjtxyAdp90YmzPmz2RN+QG3tfdGUqsGdWoI39amCKnJEf9lb5XYABAKU3VayeIiraAAAAAElFTkSuQmCC";
+		right.zorder = 4;
+		right.onclick = `change_picture('right','${picture.name}')`;
+
+		close.ath = hs.ath;
+		close.atv = hs.atv + 16;
+    close.width = 32;
+		close.height = 32;
+		close.imagewidth = 24;
+		close.imageheight = 24;
+    close.enabled = true;
+    close.edge="center";
+		close.depth="1000";
+		close.distorted="true";
+    close.scale="0.5";
+		close.flying="0.1";
+    close.onover = `tween(scale,0.75,easeOutExpo,0.2);`;
+		close.onout = `tween(scale,0.5,easeOutExpo,0.2);`;
+		close.url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAlCAYAAADFniADAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYJJREFUeNq02DFKBDEUBuBxXVSmGRALa7G09iSC4Blsba0ED2A5Xc7gASw8wdrsIha2HkBQB+OLJBizM5u8l/c/+FnYZDLfJrOTYbastU1S25QZ5avBlzvP99iXcXWUe8qS0oJBbvwnyvlai5spn2PKs/2rF0obtWum9eOHuo3bY9CbXS8ELAWFuotR+8kMIWFToFBXAXVp86UBy4FcDW7VwgE9GFYCst7x70JHwVigFIWAsUFjKE2YCDSF0oCJQZtQNbAqUA4lgVWDSlAc2IEGqBRVCvvUAHFQpbBqEBdVA+s555FsGT0SJEVxYL1k/JnwqXFXud/kk2dpDHP5DHr5jPBCNyiUqbwlGG1UCehDC6YFWlL2/Gc1TAs09/3nGjBNUKMF0wapwBCgahgKVAVDgsQwNEgEcxvyEeUss0WuKCeUQbiBD/74VaZf9/t6yv+SC9AMcWZsQenSa+oaDNoEe/Wvo0b/fW7G3oGgMdgD5TB3nzqlPAJBMeyGspO2/QgwAN0FVFy3Ms2EAAAAAElFTkSuQmCC";
+		close.zorder = 4;
+		close.onclick = `close_picture('${name}')`;
+		picture.url = arr[0];
+	]]>
+  </action>
+  <action name="open_video" type="Javascript">
+    <![CDATA[
+    krpano.call('hide_all_hotspots()');
+    krpano.call(`add_overlay()`);
+		var name = args[1];
+    <!-- const hs = krpano.get(`hotspot["${name}"]`); -->
+    const hs = {ath: krpano.get('view.hlookat'), atv: krpano.get('view.vlookat')};
+
+    const picture = krpano.addhotspot("hotspot_media_content", "webgl");
+    picture.ath = hs.ath;
+    picture.atv = hs.atv - 15;
+		picture.depth = 100;
+		picture.loadstyle('picuture');
+		picture.zorder = 4;
+
+		picture.type = "text";
+		picture.distorted = "true";
+		picture.depthbuffer = "true";
+		picture.rotationorder = "xzy";
+    picture.bgcolor = "0xFFFFFF";
+    picture.roundedge = "0";
+		picture.url = "%$mypath%/core/plugins/videoplayer.js";
+		picture.videourl = args[2];
+		picture.pausedonstart = "true";
+    picture.onclick = `togglepause()`;
+    picture.enabled = true;
+
+		const close = krpano.addhotspot('hotspot_media_nav_close', 'webgl');
+
+    close.loadstyle('vr_menu_style');
+
+    close.ath = hs.ath;
+		close.atv = hs.atv + 20;
+    close.width = 32;
+		close.height = 32;
+		close.imagewidth = 24;
+		close.imageheight = 24;
+    close.enabled = true;
+    close.edge="center";
+		close.depth="1000";
+		close.distorted="true";
+    close.scale="0.5";
+		close.flying="0.1";
+    close.onover = `tween(scale,0.75,easeOutExpo,0.2);`;
+		close.onout = `tween(scale,0.5,easeOutExpo,0.2);`;
+		close.url = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAlCAYAAADFniADAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAYJJREFUeNq02DFKBDEUBuBxXVSmGRALa7G09iSC4Blsba0ED2A5Xc7gASw8wdrsIha2HkBQB+OLJBizM5u8l/c/+FnYZDLfJrOTYbastU1S25QZ5avBlzvP99iXcXWUe8qS0oJBbvwnyvlai5spn2PKs/2rF0obtWum9eOHuo3bY9CbXS8ELAWFuotR+8kMIWFToFBXAXVp86UBy4FcDW7VwgE9GFYCst7x70JHwVigFIWAsUFjKE2YCDSF0oCJQZtQNbAqUA4lgVWDSlAc2IEGqBRVCvvUAHFQpbBqEBdVA+s555FsGT0SJEVxYL1k/JnwqXFXud/kk2dpDHP5DHr5jPBCNyiUqbwlGG1UCehDC6YFWlL2/Gc1TAs09/3nGjBNUKMF0wapwBCgahgKVAVDgsQwNEgEcxvyEeUss0WuKCeUQbiBD/74VaZf9/t6yv+SC9AMcWZsQenSa+oaDNoEe/Wvo0b/fW7G3oGgMdgD5TB3nzqlPAJBMeyGspO2/QgwAN0FVFy3Ms2EAAAAAElFTkSuQmCC";
+		close.zorder = 4;
+		close.onclick = `close_picture('${name}'); `
+	]]>
+  </action>
+</krpano>

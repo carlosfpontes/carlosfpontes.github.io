@@ -1,0 +1,46 @@
+{
+  "short_name": "Panoee",
+  "name": "Panoee - Virtual Tour 360",
+  "icons": [
+    {
+      "src": "./static/static/favicon_60.png",
+      "sizes": "60x60",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon_76.png",
+      "sizes": "76x76",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon_120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon_128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon_152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./static/static/favicon.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#d1005c",
+  "display": "standalone",
+  "theme_color": "#d1005c"
+}

@@ -1,0 +1,130 @@
+<krpano>
+  <garrows_settings
+		navhotspots_style="skin_hotspotstyle"
+		remove_originalhotspots="false"
+
+		show_floatingarrow.desktop="false"
+		show_chevrons.desktop="true"
+		show_navpoints.desktop="true"
+
+		show_floatingarrow.handheld="false"
+		show_chevrons.handheld="true"
+		show_navpoints.handheld="false"
+
+		show_floatingarrow_vr="true"
+		show_chevrons_vr="false"
+		show_navpoints_vr="false"
+
+		floatingarrow_sens="20"
+		floatingarrow_autohide="true"
+		floatingarrow_flyaway="false"
+		floatingarrow_updatedelay="0"
+		floatingarrow_alpha="0.5"
+		floatingarrow_zorder="50"
+		floatingarrow_atv="25"
+		floatingarrow_position.desktop="mouse"
+		floatingarrow_position.handheld="fixed"
+		floatingarrow_position_vr="fixed"
+		floatingarrow_scale.desktop="5"
+		floatingarrow_scale.handheld="15"
+		floatingarrow_scale_vr="15"
+
+		navpoints_putonground="true"
+		navpoints_atv="25"
+		navpoints_alpha="0.2"
+		navpoints_onhover_alpha="0.6"
+		navpoints_capture="false"
+
+		chevrons_color="0xffffff"
+		chevrons_coloronhover="0xECECEC"
+		chevrons_alpha="1"
+		chevrons_bordercolor="0xECECEC"
+		chevrons_bordercoloronhover="0xBDBDBD"
+		chevrons_borderalpha="1"
+		chevrons_borderwidth="2"
+		chevrons_shadow_color="0x000000"
+		chevrons_shadow_bordercolor="0x000000"
+		chevrons_shadow_alpha="0.5"
+		chevrons_shadow_borderwidth="0"
+		chevrons_shadow_border_alpha="0"
+		chevrons_position="25"
+		chevrons_scatter="0"
+		chevrons_distance="200"
+		chevrons_capture="true"
+		chevrons_zorder="50"
+		chevrons_updatedelay.desktop="0.05"
+		chevrons_updatedelay.handheld="0.05"
+		chevrons_shape.desktop="chevronsmediumshape"
+		chevrons_shape.handheld="chevronsmediumshape"
+
+		loadscene_blend="BLEND(0.7, easeInQuart)"
+		loadscene_flags = "KEEPVIEW"
+		show_contextmenu="false"
+		startup_delay="0"
+		cdnurl="%$mypath%/core"
+	/>
+	<!-- chevrons_shape.desktop="customchevronsshape" -->
+  <!-- important settings! this will overwrite krpano defaults -->
+  <skin_settings
+	loadscene_flags="get:garrows_settings.loadscene_flags"
+	loadscene_blend="get:garrows_settings.loadscene_blend"
+	webvr_gyro_keeplookingdirection="true"
+/>
+  <!-- custom chevrons shape example for chevrons_shape settings -->
+  <!-- read more: https://krpano.com/plugins/userplugins/arrows/ -->
+  <layer name="customchevronsshape" keep="true">
+    <arrow>
+      <point name="p0" x="0" y="calc:garrows_settings.chevrons_scatter+100" />
+      <point name="p1" x="-12" y="calc:garrows_settings.chevrons_scatter+70" />
+      <point name="p2" x="-50" y="calc:garrows_settings.chevrons_scatter+70" />
+      <point name="p3" x="-18" y="calc:garrows_settings.chevrons_scatter+55" />
+      <point name="p4" x="-33" y="calc:garrows_settings.chevrons_scatter+20" />
+      <point name="p5" x="0" y="calc:garrows_settings.chevrons_scatter+43" />
+      <point name="p6" x="33" y="calc:garrows_settings.chevrons_scatter+20" />
+      <point name="p7" x="18" y="calc:garrows_settings.chevrons_scatter+55" />
+      <point name="p8" x="50" y="calc:garrows_settings.chevrons_scatter+70" />
+      <point name="p9" x="12" y="calc:garrows_settings.chevrons_scatter+70" />
+      <center dist="get:garrows_settings.chevrons_distance" shadowdrop="0.75">
+        <functionv>
+          <point name="p0" vlookat="-90" posv="90" />
+          <point name="p1" vlookat="0" posv="get:garrows_settings.chevrons_position" />
+          <point name="p2" vlookat="90" posv="90" />
+        </functionv>
+      </center>
+    </arrow>
+  </layer>
+  <!-- chevrons style. can be customized if required -->
+  <style name="chevron"
+	fillcolor="get:garrows_settings.chevrons_color"
+	fillalpha="get:garrows_settings.chevrons_alpha"
+	bordercolor="get:garrows_settings.chevrons_bordercolor"
+	borderalpha="get:garrows_settings.chevrons_borderalpha"
+	borderwidth="get:garrows_settings.chevrons_borderwidth"
+	borderhittest="true"
+	onover="
+		removefloatingarrow();
+		tween(fillcolor,get(garrows_settings.chevrons_coloronhover),0.5);
+		tween(bordercolor,get(garrows_settings.chevrons_bordercoloronhover),0.5);
+	"
+	onout="
+		if(garrows_settings.show_floatingarrow, showfloatingarrow(););
+		tween(fillcolor,get(garrows_settings.chevrons_color),0.5);
+		tween(bordercolor,get(garrows_settings.chevrons_bordercolor),0.5);
+	"
+	capture="get:garrows_settings.chevrons_capture"
+	zorder="get:garrows_settings.chevrons_zorder"
+	keep="false">
+</style>
+  <!-- chevron shadows style. can be customized if required -->
+  <style name="chevron-shadow"
+	fillcolor="get:garrows_settings.chevrons_shadow_color"
+	fillalpha="get:garrows_settings.chevrons_shadow_alpha"
+	borderhittest="true"
+	bordercolor="get:garrows_settings.chevrons_shadow_bordercolor"
+	borderalpha="get:garrows_settings.chevrons_shadow_border_alpha"
+	borderwidth="get:garrows_settings.chevrons_shadow_borderwidth"
+	capture="get:garrows_settings.chevrons_capture"
+	zorder="calc:garrows_settings.chevrons_zorder - 1"
+	keep="false">
+</style>
+</krpano>

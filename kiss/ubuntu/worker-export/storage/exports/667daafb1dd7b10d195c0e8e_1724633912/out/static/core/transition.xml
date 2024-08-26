@@ -1,0 +1,35 @@
+<krpano>
+  <action name="transition_click">
+    <!-- set(skin_thumbs.selection,%1);
+    skin_update_scene_infos();
+    tween(view.fisheye, get(skin_thumbs.thumb[%1].fisheye), 2); copy(targetfov, skin_thumbs.thumb[%1].fov); copy(currentfov, view.fov);
+    set(zoom_out_and_in, false); if(targetfov LT 100, set(zoom_out_and_in, true));
+    if(currentfov GT 100, set(zoom_out_and_in, false));
+    if(zoom_out_and_in,
+      oninterrupt(break);
+      zoomto(100,smooth(90,90,90));
+      moveto(get(skin_thumbs.thumb[%1].hlookat),get(skin_thumbs.thumb[%1].vlookat),smooth(90,90,90));
+      zoomto(get(targetfov),smooth(90,90,90
+    ));,
+    oninterrupt(break);
+    lookto(get(skin_thumbs.thumb[%1].hlookat),get(skin_thumbs.thumb[%1].vlookat),get(targetfov),smooth(90,90,90)); ); -->
+
+		  set(hsname, %1);
+		  set(hotspot[get(hsname)].enabled, false);
+		  set(hotspot[get(hsname)].alpha, 0);
+  <!-- skin_hidetooltips(); -->
+			spheretospace(hotspot[get(hsname)].ath,hotspot[get(hsname)].atv,hotspot[get(hsname)].depth, tx,ty,tz);
+  <!-- set(s, -0.5);
+			set(image, ox=calc(s*tx), oy=calc(s*ty), oz=calc(s*tz));
+			set(view, tx=calc(s*tx), ty=calc(s*ty), tz=calc(s*tz));
+			tween(view.tx|view.ty|view.tz, 0|0|0, 1.0);
+			tween(hotspot[get(hsname)].alpha, 0.0, 0.5, default,
+        calc(layer[skin_thumbborder].parent, 'skin_thumb_' + scene[get(newscenenameorindex)].index);
+				if(hs_lookat_h !== null, skin_lookat(get(hs_lookat_h), get(hs_lookat_v), get(hs_lookat_fov)); );
+				skin_updatescroll();
+			); -->
+      set(view.fovmin, 0);
+      set(view.fovmax, 120);
+      looktohotspot(get(hsname), hotspot[get(hsname)].fov, tween(linear, 1.1) , true);
+</action>
+</krpano>
